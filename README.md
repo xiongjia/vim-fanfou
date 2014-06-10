@@ -1,4 +1,5 @@
-vim-fanfou
-==========
+# vim-fanfou
 
-vim fanfou client
+A vim fanfou plugin ( still working on it) .
+
+

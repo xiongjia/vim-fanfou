@@ -1,0 +1,25 @@
+*vim-fanfou.txt* A short multi line description of your plugin
+
+===============================================================================
+CONTENTS                                                           *vim-fanfou*
+
+    1. Intro ............................................... |vim-fanfou-intro|
+    2. Requirements ................................. |vim-fanfou-requirements|
+    3. Usage ............................................... |vim-fanfou-usage|
+    4. Licence ........................................... |vim-fanfou-licence|
+===============================================================================
+1. Intro                                                     *vim-fanfou-intro*
+
+Overview of plugin
+
+2. Requirements                                       *vim-fanfou-requirements*
+
+What additional programs are required to run the plugin
+
+3. Usage                                                     *vim-fanfou-usage*
+
+How to use the plugin. What functions does it give the user?
+
+4. Licence                                                 *vim-fanfou-licence*
+
+This is open source make sure to include a licence
