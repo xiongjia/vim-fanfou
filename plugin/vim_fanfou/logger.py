@@ -36,9 +36,9 @@ LOGGER = Log({ "level": "error", "console": False })
 def main():
     LOGGER.set_options({ "level": "debug", "console": True })
     log = LOGGER.get_logger()
-    log.info("Test info log")
-    log.error("Test error log")
-    log.debug("Test debug log")
+    log.info("info log")
+    log.error("error log")
+    log.debug("debug log")
 
 if __name__ == "__main__":
     main()
