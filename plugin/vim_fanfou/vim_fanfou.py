@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import logger
-
+from . import logger
 LOG = logger.LOGGER.get_logger()
 
 # The test entry function
