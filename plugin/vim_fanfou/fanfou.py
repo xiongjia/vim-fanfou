@@ -20,15 +20,12 @@ class Fanfou(FanfouBase.FanfouBase):
 
     def statuses_update(self, status):
         base_url = self.urls["update"]
-        data = {
-            "status": status
-        }
+        data = { "status": status }
         api_req = self.mk_api_req({
             "method": "POST",
             "base_url": base_url,
             "req_data": data,
         })
-        LOG.debug("postXX- %s", api_req)
         try:
             request = urllib2.Request(api_req["uri"],
                 data = api_req["data"],
@@ -71,34 +68,7 @@ class Fanfou(FanfouBase.FanfouBase):
             raise err
 
         # parse response
-        LOG.debug("got home timeline: datalen=%d", len(data))
-        try:
-            results = json.loads(data)
-        except Exception, err:
-            LOG.error("cannot parse home_timeline json")
-            raise ValueError("Invalid JSON")
-
-        ret_val = []
-        LOG.debug("results len=%d", len(results))
-        for item in results:
-            if ("id", "text", "created_at", "user") in item.keys():
-                continue
-
-            user = item["user"]
-            if ("id", "name") in user.keys():
-                continue
-
-            ret_item = {
-                "id": item["id"],
-                "text": item["text"],
-                "created_at": item["created_at"],
-                "user_id": user["id"],
-                "user_name": user["name"],
-            }
-            if item.has_key("photo"):
-                ret_item["photo"] = item["photo"]
-            ret_val.append(ret_item)
-        return ret_val
+        return self.parse_rep_messages(data)
 
 
 # The test entry function

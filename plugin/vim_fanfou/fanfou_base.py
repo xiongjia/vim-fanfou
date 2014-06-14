@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 from . import misc
 
 # startup logger
@@ -43,4 +44,41 @@ class FanfouBase(object):
         })
         opts["auth_keys"] = [consumer_secret, acc_token_secret]
         return self.oauth.mk_oauth(opts)
+
+    @staticmethod
+    def parse_rep_messages(data):
+        LOG.debug("parse rep, dataLen = %d", len(data))
+        try:
+            results = json.loads(data)
+        except Exception, err:
+            LOG.error("Invalid JSON object")
+            raise err
+
+        ret_val = []
+        LOG.debug("parse msg, len=%d", len(results))
+        msg_keys = ("id", "text", "create_at", "user")
+        usr_keys = ("id", "name")
+        for item in results:
+            if misc.chk_keys(msg_keys, item.keys()) != True:
+                continue
+
+            usr = item["user"]
+            if misc.chk_keys(usr_keys, usr.keys()) != True:
+                continue
+
+            ret_item = {
+                "id": item["id"],
+                "text": item["text"],
+                "created_at": item["created_at"],
+                "user_id": usr["id"],
+                "user_name": usr["name"],
+            }
+
+            if item.has_key("photo"):
+                ret_item["photo"] = item["photo"]
+
+            ret_val.append(ret_item)
+
+        return ret_val
+
 

@@ -58,6 +58,12 @@ def load_fanfou_oaut_config(conf_filename):
             full_filename, err)
         raise err
 
+def chk_keys(keys, src):
+    for key in keys:
+        if src.has_key(key) != True:
+            return False
+    return True
+
 # The test entry function
 def main():
     LOGGER.set_options({ "level": "debug", "console": True })
