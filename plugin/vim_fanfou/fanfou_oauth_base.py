@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import os, time, binascii, uuid, hmac, hashlib, webbrowser, ConfigParser
+import time, binascii, uuid, hmac, hashlib, webbrowser, ConfigParser
 import urllib
+from . import misc
 
 # startup logger
 from . import logger
@@ -26,12 +27,7 @@ class FanfouOAuthBase(object):
 
     @staticmethod
     def get_full_cache_filename(filename):
-        if os.path.isabs(filename):
-            full_filename = filename
-        else:
-            full_filename = os.path.join(os.path.expanduser("~"),
-                filename)
-        return os.path.normpath(full_filename)
+        return misc.resolve_usr_filename(filename)
 
     @classmethod
     def open_url(cls, url):

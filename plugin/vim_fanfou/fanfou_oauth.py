@@ -41,6 +41,10 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
             request = urllib2.Request(req_url)
             rep = urllib2.urlopen(request)
             data = rep.read()
+        except urllib2.HTTPError, http_err:
+            LOG.error("Cannot access %s; HTTP code %s",
+                self.urls["unauth_request_token"], http_err.code)
+            raise http_err
         except Exception, err:
             LOG.error("cannot get oauth req token: url = %s, err %s",
                 req_url, err)
@@ -70,7 +74,7 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
         # Open the authorize page and waitting the "PIN" code
         self.open_url(auth_url)
         pin = self.get_pin_code()
-        LOG.debug("get pin code: %s", pin)
+        LOG.debug("got pin code: %s", pin)
         return {
             "oauth_token": oauth_token,
             "oauth_verifier": pin,
@@ -90,6 +94,10 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
             request = urllib2.Request(req_url)
             rep = urllib2.urlopen(request)
             data = rep.read()
+        except urllib2.HTTPError, http_err:
+            LOG.error("Cannot access %s; HTTP code %s",
+                self.urls["acc_token"], http_err.code)
+            raise http_err
         except Exception, err:
             LOG.error("cannot get oauth acc token: url = %s, err %s",
                 req_url, err)
@@ -121,9 +129,13 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
 
 # The test entry function
 def main():
+    from . import misc
+
     logger.LOGGER.set_options({ "level": "debug", "console": True })
     LOG.debug("fanfou oauth")
-    ff_oauth = FanfouOAuth({ "auth_cache": ".fanfou_auth_cache" })
+
+    oauth_cfg = misc.load_fanfou_oaut_config(".fanfou.cfg")
+    ff_oauth = FanfouOAuth(oauth_cfg)
     acc_token = ff_oauth.get_cached_acc_token()
     LOG.debug("acc token %s", acc_token)
 
