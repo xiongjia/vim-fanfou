@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import time, binascii, uuid, hmac, hashlib, webbrowser, ConfigParser
-import urllib
+import time, binascii, uuid, hmac, hashlib, webbrowser, ConfigParser, urllib
 from . import misc
 
 # startup logger
-from . import logger
-LOG = logger.LOGGER.get_logger()
+LOG = misc.LOGGER.get_logger()
 
 class FanfouOAuthBase(object):
     def __init__(self, cfg):

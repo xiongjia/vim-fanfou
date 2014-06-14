@@ -1,10 +1,38 @@
 #!/usr/bin/env python
 
-import os, ConfigParser
+import os, sys, logging, ConfigParser
 
-# startup logger
-from . import logger
-LOG = logger.LOGGER.get_logger()
+# logging object
+class Log(object):
+    _LEVELS = {
+        "error": logging.ERROR,
+        "debug": logging.DEBUG,
+        "info": logging.INFO
+    }
+
+    def __init__(self, opts):
+        self._logger = logging.getLogger()
+        self.set_options(opts)
+
+    def set_options(self, opts):
+        if opts.get("console", False):
+            # enable console logger
+            out_hdlr = logging.StreamHandler(sys.stdout)
+            self._logger.addHandler(out_hdlr)
+        # update log level
+        level = self.get_log_level(opts.get("level", "info"))
+        self._logger.setLevel(level)
+
+    def get_log_level(self, log_level):
+        return self._LEVELS.get(log_level, logging.INFO)
+
+    def get_logger(self):
+        return self._logger
+
+
+# logger instance
+LOGGER = Log({ "level": "error", "console": False })
+LOG = LOGGER.get_logger()
 
 def resolve_usr_filename(filename):
     full_filename = filename
@@ -32,7 +60,7 @@ def load_fanfou_oaut_config(conf_filename):
 
 # The test entry function
 def main():
-    logger.LOGGER.set_options({ "level": "debug", "console": True })
+    LOGGER.set_options({ "level": "debug", "console": True })
     LOG.debug("misc")
     cfg = load_fanfou_oaut_config(".fanfou.cfg")
     LOG.debug("oauth config %s", cfg)

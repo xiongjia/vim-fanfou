@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
-from . import logger
-LOG = logger.LOGGER.get_logger()
+from . import misc
+
+# startup logger
+LOG = misc.LOGGER.get_logger()
 
 
 # The test entry function
 def main():
-    logger.LOGGER.set_options({ "level": "debug", "console": True })
+    misc.LOGGER.set_options({ "level": "debug", "console": True })
     LOG.debug("vim fanfou")
 
 if __name__ == "__main__":

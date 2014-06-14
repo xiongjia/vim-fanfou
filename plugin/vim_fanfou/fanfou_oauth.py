@@ -3,8 +3,10 @@
 import urllib2, urlparse
 
 from . import fanfou_oauth_base as FanfouOAuthBase
-from . import logger
-LOG = logger.LOGGER.get_logger()
+from . import misc
+
+# startup logger
+LOG = misc.LOGGER.get_logger()
 
 class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
     def __init__(self, cfg):
@@ -137,9 +139,7 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
 
 # The test entry function
 def main():
-    from . import misc
-
-    logger.LOGGER.set_options({ "level": "debug", "console": True })
+    misc.LOGGER.set_options({ "level": "debug", "console": True })
     LOG.debug("fanfou oauth")
 
     oauth_cfg = misc.load_fanfou_oaut_config(".fanfou.cfg")

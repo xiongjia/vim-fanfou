@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
+from . import misc
+
 # startup logger
-from . import logger
-LOG = logger.LOGGER.get_logger()
+LOG = misc.LOGGER.get_logger()
 
 class FanfouBase(object):
     def __init__(self, fanfou_oauth):
