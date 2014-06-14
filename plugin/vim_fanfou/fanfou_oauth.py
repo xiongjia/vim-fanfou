@@ -33,12 +33,16 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
         data = {
             "oauth_consumer_key": self.oauth_config["consumer_key"],
         }
-        oauth_req = self.mk_oauth("GET", self.urls["unauth_request_token"],
-            data, [self.oauth_config["consumer_secret"]])
-        req_url = oauth_req["req_url"]
-        LOG.debug("get unauth url %s", req_url)
+        oauth_req = self.mk_oauth({
+            "method": "GET",
+            "base_url": self.urls["unauth_request_token"],
+            "req_data": data,
+            "auth_keys": [self.oauth_config["consumer_secret"]],
+        })
+        uri = oauth_req["uri"]
+        LOG.debug("get unauth url %s", uri)
         try:
-            request = urllib2.Request(req_url)
+            request = urllib2.Request(uri)
             rep = urllib2.urlopen(request)
             data = rep.read()
         except urllib2.HTTPError, http_err:
@@ -47,7 +51,7 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
             raise http_err
         except Exception, err:
             LOG.error("cannot get oauth req token: url = %s, err %s",
-                req_url, err)
+                uri, err)
             raise err
 
         LOG.debug("get req token: data=%s", data)
@@ -86,12 +90,16 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
             "oauth_token": autho_token.get("oauth_token", ""),
             "oauth_verifier": autho_token.get("oauth_verifier", ""),
         }
-        oauth_req = self.mk_oauth("GET", self.urls["acc_token"],
-            data, [self.oauth_config["consumer_secret"]])
-        req_url = oauth_req["req_url"]
-        LOG.debug("get acc token url = %s", req_url)
+        oauth_req = self.mk_oauth({
+            "method": "GET",
+            "base_url": self.urls["acc_token"],
+            "req_data": data,
+            "auth_keys": [self.oauth_config["consumer_secret"]],
+        })
+        uri = oauth_req["req_url"]
+        LOG.debug("get acc token url = %s", uri)
         try:
-            request = urllib2.Request(req_url)
+            request = urllib2.Request(uri)
             rep = urllib2.urlopen(request)
             data = rep.read()
         except urllib2.HTTPError, http_err:
@@ -100,7 +108,7 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
             raise http_err
         except Exception, err:
             LOG.error("cannot get oauth acc token: url = %s, err %s",
-                req_url, err)
+                uri, err)
             raise err
 
         LOG.debug("get acc token: data=%s", data)

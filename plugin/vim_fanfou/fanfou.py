@@ -10,20 +10,56 @@ LOG = logger.LOGGER.get_logger()
 class Fanfou(FanfouBase.FanfouBase):
     def __init__(self, fanfou_oauth):
         super(Fanfou, self).__init__(fanfou_oauth)
-
         # api URLs
         self.urls = {
             "home_timeline":
                 "http://api.fanfou.com/statuses/home_timeline.json",
+            "update":
+                "http://api.fanfou.com/statuses/update.json"
         }
+
+    def statuses_update(self, status):
+        base_url = self.urls["update"]
+        data = {
+            "status": status
+        }
+        api_req = self.mk_api_req({
+            "method": "POST",
+            "base_url": base_url,
+            "req_data": data,
+        })
+        LOG.debug("postXX- %s", api_req)
+        try:
+            request = urllib2.Request(api_req["uri"],
+                data = api_req["data"],
+                headers = api_req["header"])
+            rep = urllib2.urlopen(request)
+            data = rep.read()
+        except Exception, err:
+            LOG.error("cannot update status, err %s", err)
+            raise err
+
+        # parse response
+        LOG.debug("got home timeline: datalen=%d", len(data))
+        try:
+            results = json.loads(data)
+        except Exception, err:
+            LOG.error("cannot parse home_timeline json")
+            raise ValueError("Invalid JSON")
+
+        LOG.debug("rep data: %s", results)
 
     def get_home_timeline(self, request_args):
         base_url = self.urls["home_timeline"]
-        api_req = self.mk_api_req("GET", base_url, request_args)
-        req_url = api_req["req_url"]
-        LOG.debug("get home time line %s", req_url)
+        api_req = self.mk_api_req({
+            "method": "GET",
+            "base_url": base_url,
+            "req_data": request_args,
+        })
+        uri = api_req["uri"]
+        LOG.debug("get home time line %s", uri)
         try:
-            request = urllib2.Request(req_url)
+            request = urllib2.Request(uri)
             rep = urllib2.urlopen(request)
             data = rep.read()
         except urllib2.HTTPError, http_err:
@@ -77,8 +113,18 @@ def main():
     ff_oauth = FanfouOAuth.FanfouOAuth(oauth_cfg)
     fanfou = Fanfou(ff_oauth)
     fanfou.load_token()
-    data_tl = fanfou.get_home_timeline({ "count": 3 })
-    LOG.debug("Timeline: %s", data_tl)
+    # Read time line
+    # tm_lines = fanfou.get_home_timeline({ "count": 1 })
+    # LOG.debug("Timeline: len=%d", len(tm_lines))
+    # for tm_ln in tm_lines:
+    #     LOG.debug("usr: %s (%s) - msg: %s",
+    #         tm_ln["user_name"], tm_ln["created_at"], tm_ln["text"])
+    #     if tm_ln.has_key("photo"):
+    #         LOG.debug("photo: %s", tm_ln["photo"])
+    #     LOG.debug("---------------------")
+
+    # Status post 
+    # fanfou.statuses_update("Fanfou OAuth Test")
 
 if __name__ == "__main__":
     main()

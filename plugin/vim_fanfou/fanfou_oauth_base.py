@@ -12,6 +12,7 @@ class FanfouOAuthBase(object):
     def __init__(self, cfg):
         # auth cach filename
         self.auth_cache = cfg.get("auth_cache")
+        self.oauth_realm = cfg.get("oauth_realm", "http://api.fanfou.com")
 
     @staticmethod
     def _escape(src_str):
@@ -38,62 +39,100 @@ class FanfouOAuthBase(object):
     def get_input(cls, msg):
         return raw_input(msg)
 
-    def get_pin_code(self):
-        return self.get_input("Enter PIN code: ")
-
-    def mk_oauth_url(self, base_url, request_data, auth_keys):
-        # sort the query data and create the query string
-        query_data = request_data.items()
-        query_data.sort()
-        query_str = urllib.urlencode(query_data)
-
-        # formate the base_str
-        base_str = "GET&%s&%s" % (
-            self._escape(base_url),
-            self._escape(query_str)
-        )
-
-        # oauth_signature = signature(base_string)
-        # signature-method = SHA1;
-        # signature-key = "consumer_secret&"
+    @staticmethod
+    def get_sig_key(auth_keys):
         if len(auth_keys) == 1:
             key = ("%s&" % "".join(auth_keys))
         else:
             key = "&".join(auth_keys)
-        sig_hash = hmac.new(key, base_str, hashlib.sha1)
-        sig_item = (
-            "oauth_signature",
-            binascii.b2a_base64(sig_hash.digest())[:-1]
-        )
-        query_data.append(sig_item)
-        return "%s?%s" % (base_url, urllib.urlencode(query_data))
+        return key
 
-    def mk_oauth(self, method, base_url, request_data, auth_keys):
+    @staticmethod
+    def oauth_sig_hash(base_str, auth_keys):
+        key = FanfouOAuthBase.get_sig_key(auth_keys)
+        sig_hash = hmac.new(key, base_str, hashlib.sha1)
+        return binascii.b2a_base64(sig_hash.digest())[:-1]
+
+    @staticmethod
+    def get_oauth_sig_item(base_str, auth_keys):
+        sig_hash = FanfouOAuthBase.oauth_sig_hash(base_str, auth_keys)
+        return ("oauth_signature", sig_hash)
+
+    @staticmethod
+    def get_normalized_urlstr(data):
+        return urllib.urlencode(data).replace("+", "%20").replace("%7E", "~")
+
+    def get_pin_code(self):
+        return self.get_input("Enter PIN code: ")
+
+    def mk_oauth_query_data(self, opts):
+        # sort the query data and create the query string
+        query_data = opts["req_data"].items()
+        query_data.sort()
+        query_str = self.get_normalized_urlstr(query_data)
+
         # base_str = "HTTP Method (GET/POST)" + "&" +
         #            "url_encode(base_url)" + "&" +
         #            sorted(querysting.items()).join('&');
-        #
-        # NOTE:
-        # It only supports "HMAC-SHA1" signature and oauth version 1.0
-        request_data["oauth_signature_method"] = "HMAC-SHA1"
-        request_data["oauth_version"] = "1.0"
+        base_str = "%s&%s&%s" % (opts["method"],
+            self._escape(opts["base_url"]), self._escape(query_str))
+        LOG.debug("base str: %s", base_str)
+
+        # oauth_signature = signature(base_string)
+        # signature-method = SHA1;
+        # signature-key = "consumer_secret&access_secret"
+        sig_item = self.get_oauth_sig_item(base_str, opts["auth_keys"])
+        query_data.append(sig_item)
+        return query_data
+
+    def mk_oauth_hdr(self, query_data):
+        oauth_params = ((k, v) for k, v in query_data
+                            if k.startswith('oauth_'))
+        stringy_params = ((k, self._escape(str(v))) for k, v in oauth_params)
+        header_params = ("%s=\"%s\"" % (k, v) for k, v in stringy_params)
+        params_hdr = ','.join(header_params)
+        auth_hdr = "OAuth "
+        if params_hdr:
+            auth_hdr = "%s %s" % (auth_hdr, params_hdr)
+        LOG.debug("Hdr: %s", auth_hdr)
+        return { "Authorization": auth_hdr }
+
+    def mk_oauth(self, opts):
+        if opts["method"] not in ("GET", "POST"):
+            LOG.error("Invalid HTTP method: %s", opts["method"])
+            raise ValueError("Invalid HTTP method")
+
+        # Fanfou only supports "HMAC-SHA1" signature and oauth version 1.0
+        req_data = opts.get("req_data")
+        req_data["oauth_signature_method"] = "HMAC-SHA1"
+        req_data["oauth_version"] = "1.0"
 
         # auto update oauth_timestamp & oauth_nonce
-        if request_data.has_key("oauth_timestamp") != True:
-            request_data["oauth_timestamp"] = self.generate_timestamp()
-        if request_data.has_key("oauth_nonce") != True:
-            request_data["oauth_nonce"] = self.generate_nonce()
+        if req_data.has_key("oauth_timestamp") != True:
+            req_data["oauth_timestamp"] = self.generate_timestamp()
+        if req_data.has_key("oauth_nonce") != True:
+            req_data["oauth_nonce"] = self.generate_nonce()
 
-        if method == "POST":
-            # TO DO: make http hdr for POST method
-            raise Exception("NO IMPL")
-        elif method == "GET":
-            req_url = self.mk_oauth_url(base_url, request_data, auth_keys)
-            LOG.debug("OAuth GET req: %s", req_url)
-            return { "req_url": req_url }
+        # make query data
+        query_data = self.mk_oauth_query_data(opts)
+
+        if opts["method"] == "GET":
+            # make GET uri
+            return {
+                "method": "GET",
+                "uri": "%s?%s" % (opts["base_url"],
+                    self.get_normalized_urlstr(query_data)),
+            }
         else:
-            LOG.error("Invalid HTTP method %s", method)
-            raise ValueError("Invalid HTTP method")
+            # make POST header&body
+            hdr = { "Content-Type": "application/x-www-form-urlencoded" }
+            hdr.update(self.mk_oauth_hdr(query_data))
+            return {
+                "method": "POST",
+                "uri": opts["base_url"],
+                "data": self.get_normalized_urlstr(query_data),
+                "header": hdr,
+            }
 
     def get_cached_acc_token(self):
         cache_filename = self.get_full_cache_filename(self.auth_cache)

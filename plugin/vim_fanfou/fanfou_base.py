@@ -27,7 +27,7 @@ class FanfouBase(object):
             self.oauth.update_auth_cache(self.acc_token)
             self.acc_token_loaded = True
 
-    def mk_api_req(self, method, base_url, req_args):
+    def mk_api_req(self, opts):
         if self.acc_token_loaded != True:
             LOG.error("Invalid Access Token")
             raise ValueError("Invalid Access Token")
@@ -36,12 +36,10 @@ class FanfouBase(object):
         consumer_key = self.oauth.oauth_config["consumer_key"]
         acc_token_secret = self.acc_token["oauth_token_secret"]
 
-        data = dict(req_args.items() + {
+        opts["req_data"].update({
             "oauth_consumer_key": consumer_key,
             "oauth_token": self.acc_token["oauth_token"],
-        }.items())
-        LOG.debug("mk api req: data = %s", data)
-        return self.oauth.mk_oauth(method, base_url, data,
-            [consumer_secret, acc_token_secret])
-
+        })
+        opts["auth_keys"] = [consumer_secret, acc_token_secret]
+        return self.oauth.mk_oauth(opts)
 
