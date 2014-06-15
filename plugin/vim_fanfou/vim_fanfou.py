@@ -5,12 +5,15 @@ from . import misc
 # startup logger
 LOG = misc.LOGGER.get_logger()
 
+class VimFanfou(object):
+    def __init__(self, cfg):
+        self.config = {
+            "consumer_key": cfg.get("consumer_key"),
+            "consumer_secret": cfg.get("consumer_secret"),
+            "auth_cache": cfg.get("auth_cache", ".fanfou_auth_cache"),
+        }
 
-# The test entry function
-def main():
-    misc.LOGGER.set_options({ "level": "debug", "console": True })
-    LOG.debug("vim fanfou")
-
-if __name__ == "__main__":
-    main()
+    @staticmethod
+    def set_logger_options(opts):
+        pass
 

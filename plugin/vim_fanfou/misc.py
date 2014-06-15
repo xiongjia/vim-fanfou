@@ -2,38 +2,6 @@
 
 import os, sys, logging, ConfigParser
 
-# logging object
-class Log(object):
-    _LEVELS = {
-        "error": logging.ERROR,
-        "debug": logging.DEBUG,
-        "info": logging.INFO
-    }
-
-    def __init__(self, opts):
-        self._logger = logging.getLogger()
-        self.set_options(opts)
-
-    def set_options(self, opts):
-        if opts.get("console", False):
-            # enable console logger
-            out_hdlr = logging.StreamHandler(sys.stdout)
-            self._logger.addHandler(out_hdlr)
-        # update log level
-        level = self.get_log_level(opts.get("level", "info"))
-        self._logger.setLevel(level)
-
-    def get_log_level(self, log_level):
-        return self._LEVELS.get(log_level, logging.INFO)
-
-    def get_logger(self):
-        return self._logger
-
-
-# logger instance
-LOGGER = Log({ "level": "error", "console": False })
-LOG = LOGGER.get_logger()
-
 def resolve_usr_filename(filename):
     full_filename = filename
     if os.path.isabs(full_filename) == False:
@@ -64,9 +32,93 @@ def chk_keys(keys, src_list):
             return False
     return True
 
+# logging object
+class Log(object):
+    _LEVELS = {
+        "error": logging.ERROR,
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+        "warning": logging.WARNING,
+        "critical": logging.CRITICAL,
+    }
+
+    def __init__(self, opts):
+        self._logger = logging.getLogger()
+        self._hdlr = {}
+        # set options
+        self.set_options(opts)
+
+    def set_options(self, opts):
+        # enable/disable console logger
+        if opts.get("console", False):
+            self._enable_console_logger()
+        else:
+            self._disable_console_logger()
+
+        # enable/disable fs logger
+        log_file = opts.get("fs", None)
+        if log_file:
+            self._enable_fs_logger(log_file)
+        else:
+            self._disable_fs_logger()
+
+        # update log level
+        level = self.get_log_level(opts.get("level", "error"))
+        self._logger.setLevel(level)
+
+        # update disable/enable flag
+        self.set_disable(opts.get("disable", False))
+
+    def get_log_level(self, log_level):
+        return self._LEVELS.get(log_level, logging.INFO)
+
+    def get_logger(self):
+        return self._logger
+
+    def set_disable(self, disable):
+        # disable/enable the logger
+        self._logger.disabled = disable
+
+    def _enable_console_logger(self):
+        # enable console logger
+        if self._hdlr.has_key("console") != True:
+            self._hdlr["console"] = logging.StreamHandler(sys.stdout)
+            self._logger.addHandler(self._hdlr["console"])
+
+    def _disable_console_logger(self):
+        # disable console logger
+        if self._hdlr.has_key("console"):
+            self._logger.removeHandler(self._hdlr["console"])
+            del self._hdlr["console"]
+
+    def _enable_fs_logger(self, filename):
+        # close old fs stream
+        if self._hdlr.has_key("fs"):
+            self._disable_fs_logger()
+
+        # create a new fs log stream
+        full_filename = resolve_usr_filename(filename)
+        self._hdlr["fs"] = logging.FileHandler(full_filename)
+        self._logger.addHandler(self._hdlr["fs"])
+
+    def _disable_fs_logger(self):
+        # disable fs logger
+        if self._hdlr.has_key("fs"):
+            self._logger.removeHandler(self._hdlr["fs"])
+            del self._hdlr["fs"]
+
+
+# logger instance
+LOGGER = Log({ "level": "error", "console": False })
+LOG = LOGGER.get_logger()
+
 # The test entry function
 def main():
-    LOGGER.set_options({ "level": "debug", "console": True })
+    LOGGER.set_options({
+        "level": "debug",
+        "console": True,
+        "fs": "vim-fanfou.log",
+    })
     LOG.debug("misc")
     cfg = load_fanfou_oaut_config(".fanfou.cfg")
     LOG.debug("oauth config %s", cfg)
