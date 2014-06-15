@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import urllib2, urlparse
+import urlparse
 
 from . import fanfou_oauth_base as FanfouOAuthBase
 from . import misc
@@ -35,30 +35,21 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
         data = {
             "oauth_consumer_key": self.oauth_config["consumer_key"],
         }
-        oauth_req = self.mk_oauth({
-            "method": "GET",
-            "base_url": self.urls["unauth_request_token"],
-            "req_data": data,
-            "auth_keys": [self.oauth_config["consumer_secret"]],
-        })
-        uri = oauth_req["uri"]
-        LOG.debug("get unauth url %s", uri)
         try:
-            request = urllib2.Request(uri)
-            rep = urllib2.urlopen(request)
-            data = rep.read()
-        except urllib2.HTTPError, http_err:
-            LOG.error("Cannot access %s; HTTP code %s",
-                self.urls["unauth_request_token"], http_err.code)
-            raise http_err
+            rep_data = self.send_oauth_req({
+                "method": "GET",
+                "base_url": self.urls["unauth_request_token"],
+                "req_data": data,
+                "auth_keys": [self.oauth_config["consumer_secret"]],
+            })
         except Exception, err:
-            LOG.error("cannot get oauth req token: url = %s, err %s",
-                uri, err)
+            LOG.error("cannot get oauth req token: err %s", err)
             raise err
 
-        LOG.debug("get req token: data=%s", data)
-        token = urlparse.parse_qs(data)
-        if ("oauth_token", "oauth_token_secret") in token.keys():
+        token = urlparse.parse_qs(rep_data)
+        require_keys = ("oauth_token", "oauth_token_secret")
+        if misc.chk_keys(require_keys, token.keys()) != True:
+            LOG.error("Invalid OAuth Token, repKeys = %s", token.keys())
             raise ValueError("Invalid OAuth token")
 
         result = {
@@ -87,35 +78,28 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
         }
 
     def get_acc_token(self, autho_token):
+        # send request to self.urls["acc_token"]
         data = {
             "oauth_consumer_key": self.oauth_config["consumer_key"],
             "oauth_token": autho_token.get("oauth_token", ""),
             "oauth_verifier": autho_token.get("oauth_verifier", ""),
         }
-        oauth_req = self.mk_oauth({
-            "method": "GET",
-            "base_url": self.urls["acc_token"],
-            "req_data": data,
-            "auth_keys": [self.oauth_config["consumer_secret"]],
-        })
-        uri = oauth_req["req_url"]
-        LOG.debug("get acc token url = %s", uri)
         try:
-            request = urllib2.Request(uri)
-            rep = urllib2.urlopen(request)
-            data = rep.read()
-        except urllib2.HTTPError, http_err:
-            LOG.error("Cannot access %s; HTTP code %s",
-                self.urls["acc_token"], http_err.code)
-            raise http_err
+            rep_data = self.send_oauth_req({
+                "method": "GET",
+                "base_url": self.urls["acc_token"],
+                "req_data": data,
+                "auth_keys": [self.oauth_config["consumer_secret"]],
+            })
         except Exception, err:
-            LOG.error("cannot get oauth acc token: url = %s, err %s",
-                uri, err)
+            LOG.error("cannot get oauth acc token: err %s", err)
             raise err
 
-        LOG.debug("get acc token: data=%s", data)
-        token = urlparse.parse_qs(data)
-        if ("oauth_token", "oauth_token_secret") in token.keys():
+        # parse&verify the response token
+        token = urlparse.parse_qs(rep_data)
+        require_keys = ("oauth_token", "oauth_token_secret")
+        if misc.chk_keys(require_keys, token.keys()) != True:
+            LOG.error("Invalid OAuth Token, repKeys = %s", token.keys())
             raise ValueError("Invalid OAuth token")
 
         result = {

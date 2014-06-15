@@ -58,9 +58,9 @@ def load_fanfou_oaut_config(conf_filename):
             full_filename, err)
         raise err
 
-def chk_keys(keys, src):
+def chk_keys(keys, src_list):
     for key in keys:
-        if src.has_key(key) != True:
+        if key not in src_list:
             return False
     return True
 

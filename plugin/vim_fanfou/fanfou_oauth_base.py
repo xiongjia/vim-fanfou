@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import time, binascii, uuid, hmac, hashlib, webbrowser, ConfigParser, urllib
+import time, webbrowser, ConfigParser
+import binascii, uuid, hmac, hashlib
+import urllib, urllib2
 from . import misc
 
 # startup logger
@@ -10,7 +12,6 @@ class FanfouOAuthBase(object):
     def __init__(self, cfg):
         # auth cach filename
         self.auth_cache = cfg.get("auth_cache")
-        self.oauth_realm = cfg.get("oauth_realm", "http://api.fanfou.com")
 
     @staticmethod
     def _escape(src_str):
@@ -60,8 +61,36 @@ class FanfouOAuthBase(object):
     def get_normalized_urlstr(data):
         return urllib.urlencode(data).replace("+", "%20").replace("%7E", "~")
 
+    @staticmethod
+    def send_req(req_opts):
+        if req_opts["method"] == "GET":
+            LOG.debug("send GET req: %s", req_opts["uri"])
+            req = urllib2.Request(req_opts["uri"])
+        elif req_opts["method"] == "POST":
+            LOG.debug("send POST req: %s", req_opts["uri"])
+            req = urllib2.Request(req_opts["uri"],
+                    data = req_opts["data"],
+                    headers = req_opts["header"])
+        else:
+            LOG.error("Invalid method %s", req_opts["method"])
+            raise ValueError("Invalid HTTP method")
+
+        try:
+            rep = urllib2.urlopen(req)
+            data = rep.read()
+        except urllib2.HTTPError, http_err:
+            LOG.error("Cannot access target server. HTTP code %s",
+                http_err.code)
+            raise http_err
+        except Exception, err:
+            LOG.error("HTTP Request error %s", err)
+            raise err
+        else:
+            LOG.debug("HTTP repLen=%d", len(data))
+            return data
+
     def get_pin_code(self):
-        return self.get_input("Enter PIN code: ")
+        return self.get_input("Enter the PIN code: ")
 
     def mk_oauth_query_data(self, opts):
         # sort the query data and create the query string
@@ -84,10 +113,12 @@ class FanfouOAuthBase(object):
         return query_data
 
     def mk_oauth_hdr(self, query_data):
-        oauth_params = ((k, v) for k, v in query_data
-                            if k.startswith('oauth_'))
-        stringy_params = ((k, self._escape(str(v))) for k, v in oauth_params)
-        header_params = ("%s=\"%s\"" % (k, v) for k, v in stringy_params)
+        oauth_params = ((key, val) for key, val in query_data
+                            if key.startswith('oauth_'))
+        stringy_params = ((key, self._escape(str(val)))
+                            for key, val in oauth_params)
+        header_params = ("%s=\"%s\"" % (key, val)
+                            for key, val in stringy_params)
         params_hdr = ','.join(header_params)
         auth_hdr = "OAuth "
         if params_hdr:
@@ -169,4 +200,8 @@ class FanfouOAuthBase(object):
         LOG.debug("save auth cache to %s", cache_filename)
         with open(cache_filename, "w") as cache_file:
             cache.write(cache_file)
+
+    def send_oauth_req(self, opts):
+        oauth_req = self.mk_oauth(opts)
+        return self.send_req(oauth_req)
 

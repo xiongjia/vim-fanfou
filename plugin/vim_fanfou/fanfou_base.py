@@ -45,6 +45,10 @@ class FanfouBase(object):
         opts["auth_keys"] = [consumer_secret, acc_token_secret]
         return self.oauth.mk_oauth(opts)
 
+    def send_api_req(self, opts):
+        api_req = self.mk_api_req(opts)
+        return self.oauth.send_req(api_req)
+
     @staticmethod
     def parse_rep_messages(data):
         LOG.debug("parse rep, dataLen = %d", len(data))
@@ -56,7 +60,7 @@ class FanfouBase(object):
 
         ret_val = []
         LOG.debug("parse msg, len=%d", len(results))
-        msg_keys = ("id", "text", "create_at", "user")
+        msg_keys = ("id", "text", "created_at", "user")
         usr_keys = ("id", "name")
         for item in results:
             if misc.chk_keys(msg_keys, item.keys()) != True:

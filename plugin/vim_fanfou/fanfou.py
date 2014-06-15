@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import urllib2, json
 from . import fanfou_base as FanfouBase
 from . import misc
 
@@ -19,56 +18,35 @@ class Fanfou(FanfouBase.FanfouBase):
         }
 
     def statuses_update(self, status):
-        base_url = self.urls["update"]
+        # post the request
         data = { "status": status }
-        api_req = self.mk_api_req({
-            "method": "POST",
-            "base_url": base_url,
-            "req_data": data,
-        })
         try:
-            request = urllib2.Request(api_req["uri"],
-                data = api_req["data"],
-                headers = api_req["header"])
-            rep = urllib2.urlopen(request)
-            data = rep.read()
+            rep_data = self.send_api_req({
+                "method": "POST",
+                "base_url": self.urls["update"],
+                "req_data": data,
+            })
         except Exception, err:
             LOG.error("cannot update status, err %s", err)
             raise err
-
         # parse response
-        LOG.debug("got home timeline: datalen=%d", len(data))
-        try:
-            results = json.loads(data)
-        except Exception, err:
-            LOG.error("cannot parse home_timeline json")
-            raise ValueError("Invalid JSON")
+        return self.parse_rep_messages(rep_data)
 
-        LOG.debug("rep data: %s", results)
-
-    def get_home_timeline(self, request_args):
-        base_url = self.urls["home_timeline"]
-        api_req = self.mk_api_req({
-            "method": "GET",
-            "base_url": base_url,
-            "req_data": request_args,
-        })
-        uri = api_req["uri"]
-        LOG.debug("get home time line %s", uri)
+    def get_home_timeline(self, opts):
+        data = {
+            "count": opts.get("count", 10),
+        }
         try:
-            request = urllib2.Request(uri)
-            rep = urllib2.urlopen(request)
-            data = rep.read()
-        except urllib2.HTTPError, http_err:
-            LOG.error("Cannot access %s; HTTP code %s",
-                base_url, http_err.code)
-            raise http_err
+            rep_data = self.send_api_req({
+                "method": "GET",
+                "base_url": self.urls["home_timeline"],
+                "req_data": data,
+            })
         except Exception, err:
             LOG.error("cannot access home timeline, err %s", err)
             raise err
-
         # parse response
-        return self.parse_rep_messages(data)
+        return self.parse_rep_messages(rep_data)
 
 
 # The test entry function
