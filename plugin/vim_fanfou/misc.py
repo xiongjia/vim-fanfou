@@ -9,29 +9,6 @@ def resolve_usr_filename(filename):
             full_filename)
     return os.path.normpath(full_filename)
 
-def load_fanfou_oaut_config(conf_filename):
-    full_filename = resolve_usr_filename(conf_filename)
-
-    LOG.debug("Load oauth config from %s", full_filename)
-    try:
-        cfg = ConfigParser.RawConfigParser()
-        cfg.read(full_filename)
-        return {
-            "consumer_key": cfg.get("fanfou", "consumer_key"),
-            "consumer_secret": cfg.get("fanfou", "consumer_secret"),
-            "auth_cache": cfg.get("fanfou", "auth_cache"),
-        }
-    except Exception, err:
-        LOG.warn("Cannot load config from %s; err %s",
-            full_filename, err)
-        raise err
-
-def chk_keys(keys, src_list):
-    for key in keys:
-        if key not in src_list:
-            return False
-    return True
-
 # logging object
 class Log(object):
     _LEVELS = {
@@ -111,6 +88,29 @@ class Log(object):
 # logger instance
 LOGGER = Log({ "level": "error", "console": False })
 LOG = LOGGER.get_logger()
+
+def load_fanfou_oaut_config(conf_filename):
+    full_filename = resolve_usr_filename(conf_filename)
+
+    LOG.debug("Load oauth config from %s", full_filename)
+    try:
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read(full_filename)
+        return {
+            "consumer_key": cfg.get("fanfou", "consumer_key"),
+            "consumer_secret": cfg.get("fanfou", "consumer_secret"),
+            "auth_cache": cfg.get("fanfou", "auth_cache"),
+        }
+    except Exception, err:
+        LOG.warn("Cannot load config from %s; err %s",
+            full_filename, err)
+        raise err
+
+def chk_keys(keys, src_list):
+    for key in keys:
+        if key not in src_list:
+            return False
+    return True
 
 # The test entry function
 def main():
