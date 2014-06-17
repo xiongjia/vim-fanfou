@@ -21,6 +21,7 @@ class Log(object):
 
     def __init__(self, opts):
         self._logger = logging.getLogger()
+        self._logger.addHandler(logging.NullHandler())
         self._hdlr = {}
         # set options
         self.set_options(opts)

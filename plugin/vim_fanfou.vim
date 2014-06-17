@@ -29,7 +29,6 @@ python sys.path.append(vim.eval('expand("<sfile>:h")'))
 python << end_python
 import vim
 from vim_fanfou import vim_fanfou
-
 VIM = vim_fanfou.VIM
 VIM.set_vim_mod(vim)
 
@@ -37,16 +36,18 @@ cfg = {
     "consumer_key": VIM.get_val("g:fanfou_consumer_key"),
     "consumer_secret": VIM.get_val("g:fanfou_consumer_secret"),
     "auth_cache": VIM.get_val("g:fanfou_auth_cache"),
+    "log_file": VIM.get_val("g:fanfou_log_file"),
+    "log_level": VIM.get_val("g:fanfou_log_level"),
 }
 vim_fanfou.VimFanfou.init(cfg)
 end_python
 
-function! TestFunc()
+function! FanfouTest()
 python << end_python
+from vim_fanfou import vim_fanfou
+VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
 
-import vim_fanfou
-
+VIM_FANFOU.update_home_timeline()
 end_python
 endfunction
-
 
