@@ -27,13 +27,18 @@ python sys.path.append(vim.eval('expand("<sfile>:h")'))
 " Startup vim_fanfou
 " TODO: load consumer_key from config file
 python << end_python
-import vim_fanfou, vim
+import vim
+from vim_fanfou import vim_fanfou
+
+VIM = vim_fanfou.VIM
+VIM.set_vim_mod(vim)
+
 cfg = {
-    "consumer_key": "",
-    "consumer_secret": "",
-    "auth_cache": ".fanfou_auth_cache",
+    "consumer_key": VIM.get_val("g:fanfou_consumer_key"),
+    "consumer_secret": VIM.get_val("g:fanfou_consumer_secret"),
+    "auth_cache": VIM.get_val("g:fanfou_auth_cache"),
 }
-vim_fanfou.vim_fanfou.vim_fanfou_init(cfg)
+vim_fanfou.VimFanfou.init(cfg)
 end_python
 
 function! TestFunc()
