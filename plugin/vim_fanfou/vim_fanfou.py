@@ -17,12 +17,21 @@ class Vim(object):
     def get_vim_mod(self):
         return self._vim
 
-    def vim_eval(self, src):
-        return self._vim.eval(src)
+    def vim_eval(self, exp):
+        return self._vim.eval(exp)
+
+    def vim_cmd(self, cmd):
+        self._vim.command(cmd)
 
     def get_val(self, var_name, default_ret = ""):
         return self.vim_eval("exists('%s') ? %s : '%s'" %
             (var_name, var_name, default_ret))
+
+    def show_err_msg(self, msg):
+        self.vim_cmd("echohl ErrorMsg | echo '%s' | echohl None" % msg)
+
+    def show_warn_msg(self, msg):
+        self.vim_cmd("echohl WarningMsg | echo '%s' | echohl None" % msg)
 
 
 VIM = Vim()

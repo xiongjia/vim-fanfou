@@ -20,18 +20,17 @@ endif
 " Set the loaded flag
 let loaded_mytestplugin = 1
 
-" update import path
-python import sys, vim
-python sys.path.append(vim.eval('expand("<sfile>:h")'))
-
 " Startup vim_fanfou
 " TODO: load consumer_key from config file
 python << end_python
-import vim
+# update import path
+import sys, vim
+sys.path.append(vim.eval('expand("<sfile>:h")'))
+
+# import vim_fanfou.py and startup it
 from vim_fanfou import vim_fanfou
 VIM = vim_fanfou.VIM
 VIM.set_vim_mod(vim)
-
 cfg = {
     "consumer_key": VIM.get_val("g:fanfou_consumer_key"),
     "consumer_secret": VIM.get_val("g:fanfou_consumer_secret"),
