@@ -37,6 +37,7 @@ cfg = {
     "auth_cache": VIM.get_val("g:fanfou_auth_cache"),
     "log_file": VIM.get_val("g:fanfou_log_file"),
     "log_level": VIM.get_val("g:fanfou_log_level"),
+    "buf_name": VIM.get_val("g:fanfou_buf_name"),
 }
 vim_fanfou.VimFanfou.init(cfg)
 end_python

@@ -3,41 +3,14 @@
 from . import misc
 from . import fanfou_oauth as FanfouOAuth
 from . import fanfou as Fanfou
+from . import vim_util as VimUtil
+from . import vim_fanfou_base as VimFanfouBase
 
-# startup logger
+# startup logger and VIM util
 LOG = misc.LOGGER.get_logger()
+VIM = VimUtil.Vim()
 
-class Vim(object):
-    def __init__(self):
-        self._vim = None
-
-    def set_vim_mod(self, vim):
-        self._vim = vim
-
-    def get_vim_mod(self):
-        return self._vim
-
-    def vim_eval(self, exp):
-        return self._vim.eval(exp)
-
-    def vim_cmd(self, cmd):
-        self._vim.command(cmd)
-
-    def get_val(self, var_name, default_ret = ""):
-        return self.vim_eval("exists('%s') ? %s : '%s'" %
-            (var_name, var_name, default_ret))
-
-    def show_err_msg(self, msg):
-        self.vim_cmd("echohl ErrorMsg | echo '%s' | echohl None" % msg)
-
-    def show_warn_msg(self, msg):
-        self.vim_cmd("echohl WarningMsg | echo '%s' | echohl None" % msg)
-
-
-VIM = Vim()
-
-
-class VimFanfou(object):
+class VimFanfou(VimFanfouBase.VimFanfouBase):
     VIM_FANFOU = None
     DEFAULT_CFG = {
         "consumer_key": "df51b20a9dcd93e13abe1f22389f5372",
@@ -45,14 +18,17 @@ class VimFanfou(object):
         "auth_cache": ".fanfou_auth_cache",
         "log_file": None,
         "log_level": "debug",
+        "buf_name": "VimFanfou",
     }
 
     def __init__(self, cfg):
+        super(VimFanfou, self).__init__()
         # check config
         self.config = {
             "consumer_key": self._check_cfg_item(cfg, "consumer_key"),
             "consumer_secret": self._check_cfg_item(cfg, "consumer_secret"),
             "auth_cache": self._check_cfg_item(cfg, "auth_cache"),
+            "buf_name": self._check_cfg_item(cfg, "buf_name"),
         }
 
         # update logger options
@@ -78,11 +54,38 @@ class VimFanfou(object):
             LOG.warn("cannot update home timline %s", err)
             return
 
-        vim = VIM.get_vim_mod()
-        buf = vim.current.buffer
+        buf = self._switch_to_fanfou_buf()
+        if not buf:
+            LOG.error("create switch to fanfou buf")
+            return
+
         for line in data:
             buf.append("usr: %s (%s) - msg: %s\n" %
                 (line["user_name"], line["created_at"], line["text"]))
+
+    def _switch_to_fanfou_buf(self):
+        buf_name = self.config["buf_name"]
+        bufnr = VIM.bufwinnr("^%s$" %  buf_name)
+        if bufnr > 0:
+            # switch to current buff
+            VIM.vim_cmd("%dwincmd w" % bufnr)
+        else:
+            # create a new buf
+            VIM.vim_batch([
+                "new %s" % buf_name,
+                "setlocal noswapfile",
+                "setlocal buftype=nofile",
+                "setlocal bufhidden=delete",
+                "setlocal foldcolumn=0",
+                "setlocal nobuflisted",
+                "setlocal nospell",
+            ])
+        cur_buf_name = VIM.vim_eval("bufname('%')")
+        if cur_buf_name != buf_name:
+            LOG.error("Cannot create/find fanfou vim buf")
+            return None
+        vim = VIM.get_vim_mod()
+        return vim.current.buffer
 
     @staticmethod
     def init(cfg):
