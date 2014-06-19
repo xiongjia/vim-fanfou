@@ -3,7 +3,7 @@
 from . import misc
 LOG = misc.LOGGER.get_logger()
 
-class Vim(object):
+class VimUtil(object):
     def __init__(self):
         self._vim = None
 
@@ -51,4 +51,16 @@ class Vim(object):
             return -1
         else:
             return bufnr
+
+class VimBuffModifiable(object):
+    def __init__(self, vim_util):
+        self._vim_util = vim_util
+
+    def __enter__(self):
+        self._vim_util.vim_cmd("setlocal modifiable")
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self._vim_util.vim_cmd("setlocal nomodifiable")
+
 

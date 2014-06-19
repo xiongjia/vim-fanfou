@@ -8,7 +8,7 @@ from . import vim_fanfou_base as VimFanfouBase
 
 # startup logger and VIM util
 LOG = misc.LOGGER.get_logger()
-VIM = VimUtil.Vim()
+VIM = VimUtil.VimUtil()
 
 class VimFanfou(VimFanfouBase.VimFanfouBase):
     VIM_FANFOU = None
@@ -61,10 +61,9 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             return
 
         # update timeline to buffer
-        VIM.vim_cmd("setlocal modifiable")
-        buf[:] = None
-        self.append_timeline(buf, tm_ln)
-        VIM.vim_cmd("setlocal nomodifiable")
+        with VimUtil.VimBuffModifiable(VIM):
+            buf[:] = None
+            self.append_timeline(buf, tm_ln)
 
     @staticmethod
     def append_timeline(vim_buf, tm_ln):
