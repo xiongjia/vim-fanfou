@@ -20,21 +20,28 @@ class Vim(object):
         self._vim.command(cmd)
 
     def vim_batch(self, cmd_list):
-        for cmd in cmd_list:
-            self.vim_cmd(cmd)
+        self.vim_cmd(" | ".join(cmd_list))
 
     def get_val(self, var_name, default_ret = ""):
         return self.vim_eval("exists('%s') ? %s : '%s'" %
             (var_name, var_name, default_ret))
 
-    def show_msg(self, msg):
-        self.vim_cmd("echohl None | echo '%s' | echohl None" % msg)
+    def _show_msg_level(self, level, msg):
+        self.vim_batch([
+            "redraw",
+            "echohl %s" % level,
+            "echomsg %s" % msg,
+            "echohl None",
+        ])
+
+    def show_msg_normal(self, msg):
+        self._show_msg_level("None", msg)
 
     def show_msg_err(self, msg):
-        self.vim_cmd("echohl ErrorMsg | echo '%s' | echohl None" % msg)
+        self._show_msg_level("ErrorMsg", msg)
 
     def show_msg_warn(self, msg):
-        self.vim_cmd("echohl WarningMsg | echo '%s' | echohl None" % msg)
+        self._show_msg_level("WarningMsg", msg)
 
     def bufwinnr(self, name):
         try:
@@ -42,5 +49,6 @@ class Vim(object):
         except Exception, err:
             LOG.warn("bufwinnr (%s) err: %s", name, err)
             return -1
-        return bufnr
+        else:
+            return bufnr
 
