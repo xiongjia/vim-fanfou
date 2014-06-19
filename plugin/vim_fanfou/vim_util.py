@@ -52,6 +52,7 @@ class VimUtil(object):
         else:
             return bufnr
 
+
 class VimBuffModifiable(object):
     def __init__(self, vim_util):
         self._vim_util = vim_util

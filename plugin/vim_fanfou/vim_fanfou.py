@@ -68,6 +68,6 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
     @staticmethod
     def append_timeline(vim_buf, tm_ln):
         for item in tm_ln:
-            vim_buf.append("usr: %s (%s) - msg: %s\n" %
-                (item["user_name"], item["created_at"], item["text"]))
+            vim_buf.append("%s: %s <%s>\n" %
+                (item["user_name"], item["text"], item["created_at"]))
 
