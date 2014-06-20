@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import os, sys, logging, ConfigParser
+import os, sys, logging, ConfigParser, time
+from email import utils as emailutils
 
 def resolve_usr_filename(filename):
     full_filename = filename
@@ -113,6 +114,17 @@ def chk_keys(keys, src_list):
             return False
     return True
 
+def parse_tm_str(tm_str):
+    try:
+        tm_tuple = emailutils.parsedate_tz(tm_str)
+        tm_val = emailutils.mktime_tz(tm_tuple)
+        local_tm = time.ctime(tm_val)
+    except Exception, err:
+        LOG.warn("Cannot parse %s; err %s", tm_str, err)
+        return tm_str
+    else:
+        return local_tm
+
 # The test entry function
 def main():
     LOGGER.set_options({
@@ -123,6 +135,9 @@ def main():
     LOG.debug("misc")
     cfg = load_fanfou_oaut_config(".fanfou.cfg")
     LOG.debug("oauth config %s", cfg)
+
+    tm_str = parse_tm_str("Fri Jun 20 14:00:03 +0000 2014")
+    LOG.debug("tm %s", tm_str)
 
 if __name__ == "__main__":
     main()

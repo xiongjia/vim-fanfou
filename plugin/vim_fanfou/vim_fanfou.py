@@ -55,9 +55,17 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             buf[:] = None
             self.append_timeline(buf, tm_ln)
 
-    @staticmethod
-    def append_timeline(vim_buf, tm_ln):
+    def append_timeline(self, vim_buf, tm_ln):
+        self.add_hdr(vim_buf, "Fanfou Home Timeline")
         for item in tm_ln:
-            vim_buf.append("%s: %s |%s|" %
-                (item["user_name"], item["text"], item["created_at"]))
+            vim_buf.append("%s: %s |%s|" % (
+                item["user_name"],
+                item["text"],
+                misc.parse_tm_str(item["created_at"]),
+            ))
+
+    @staticmethod
+    def add_hdr(vim_buf, title):
+        VIM.vim_cmd("call setline('.', '%s')" % title)
+        vim_buf.append("======================")
 
