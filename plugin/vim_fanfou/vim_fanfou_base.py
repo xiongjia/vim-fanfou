@@ -58,17 +58,21 @@ class VimFanfouBase(object):
         misc.LOGGER.set_options(opts)
 
     def update_buf_syntax(self):
+        if not self.VIM_OPTS["sytax_enabled"]:
+            return
+
         self._vim.vim_batch([
             "syntax clear",
             # username
-            r"syntax match fanfouUsr /^.\{-1,}:/",
-            "highlight default link fanfouUsr Identifier",
+            r"syn match fanfouUsr /^.\{-1,}:/",
+            "hi default link fanfouUsr Identifier",
             # time stamp
-            r"syntax match fanfouTime /|[^|]\+|$/ contains=fanfouTimeBar",
-            r"syntax match fanfouTimeBar /|/ contained",
-            "highlight default link fanfouTime String",
-            "highlight default link fanfouTimeBar Ignore",
-        ])
+            "hi FanfouTimeBar guifg=bg ctermfg=0",
+            r"syn match fanfouTime /|[^|]\+|$/ contains=fanfouTimeBar",
+            r"syn match fanfouTimeBar /|/ contained",
+            "hi default link fanfouTimeBar FanfouTimeBar",
+            "hi default link fanfouTime String",
+       ])
 
     def switch_to_buf(self, buf_name):
         bufnr = self._vim.bufwinnr("^%s$" %  buf_name)
