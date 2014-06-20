@@ -14,9 +14,40 @@ class VimFanfouBase(object):
         "log_level": "debug",
         "buf_name": "VimFanfou",
     }
+    VIM_OPTS = {
+        "sytax_enabled": True
+    }
 
-    def __init__(self, vim_util):
+    def __init__(self, vim_util, cfg):
         self._vim = vim_util
+        # check config
+        self.config = {
+            "consumer_key": self.check_cfg_item(cfg, "consumer_key"),
+            "consumer_secret": self.check_cfg_item(cfg, "consumer_secret"),
+            "auth_cache": self.check_cfg_item(cfg, "auth_cache"),
+            "buf_name": self.check_cfg_item(cfg, "buf_name"),
+        }
+        # update logger options
+        self.set_logger_options({
+            "console": False,
+            "fs": self.check_cfg_item(cfg, "log_file"),
+            "level": self.check_cfg_item(cfg, "log_level"),
+        })
+        # update vim settings
+        self.update_vim_settings()
+
+    def update_vim_settings(self):
+        if self._vim.vim_eval("has('syntax') && exists('g:syntax_on')"):
+            self.VIM_OPTS["sytax_enabled"] = True
+        else:
+            self.VIM_OPTS["sytax_enabled"] = False
+
+    def get_oauth_conf(self):
+        return {
+            "consumer_key": self.config["consumer_key"],
+            "consumer_secret": self.config["consumer_secret"],
+            "auth_cache": self.config["auth_cache"],
+        }
 
     @staticmethod
     def check_cfg_item(cfg, item):
@@ -29,8 +60,14 @@ class VimFanfouBase(object):
     def update_buf_syntax(self):
         self._vim.vim_batch([
             "syntax clear",
+            # username
             r"syntax match fanfouUsr /^.\{-1,}:/",
             "highlight default link fanfouUsr Identifier",
+            # time stamp
+            r"syntax match fanfouTime /|[^|]\+|$/ contains=fanfouTimeBar",
+            r"syntax match fanfouTimeBar /|/ contained",
+            "highlight default link fanfouTime String",
+            "highlight default link fanfouTimeBar Ignore",
         ])
 
     def switch_to_buf(self, buf_name):

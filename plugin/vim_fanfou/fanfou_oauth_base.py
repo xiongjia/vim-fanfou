@@ -35,8 +35,8 @@ class FanfouOAuthBase(object):
         webbrowser.open_new_tab(url)
 
     @classmethod
-    def get_input(cls, msg):
-        return raw_input(msg)
+    def get_input(cls, prompt):
+        return raw_input(prompt)
 
     @staticmethod
     def get_sig_key(auth_keys):

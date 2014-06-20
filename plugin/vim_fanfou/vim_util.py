@@ -52,6 +52,14 @@ class VimUtil(object):
         else:
             return bufnr
 
+    def vim_input(self, prompt):
+        self.vim_batch([
+            "call inputsave()",
+            "redraw"])
+        ret_val = self.vim_eval("input('%s')" % prompt)
+        self.vim_cmd("call inputrestore()")
+        return ret_val
+
 
 class VimBuffModifiable(object):
     def __init__(self, vim_util):

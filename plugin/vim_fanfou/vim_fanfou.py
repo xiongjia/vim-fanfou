@@ -10,32 +10,22 @@ from . import vim_fanfou_base as VimFanfouBase
 LOG = misc.LOGGER.get_logger()
 VIM = VimUtil.VimUtil()
 
+class VimFanfouOAuth(FanfouOAuth.FanfouOAuth):
+    def __init__(self, cfg):
+        super(VimFanfouOAuth, self).__init__(cfg)
+
+    @classmethod
+    def get_instance(cls, prompt):
+        return VIM.vim_input(prompt)
+
+
 class VimFanfou(VimFanfouBase.VimFanfouBase):
     VIM_FANFOU = None
 
     def __init__(self, cfg):
-        super(VimFanfou, self).__init__(VIM)
-        # check config
-        self.config = {
-            "consumer_key": self.check_cfg_item(cfg, "consumer_key"),
-            "consumer_secret": self.check_cfg_item(cfg, "consumer_secret"),
-            "auth_cache": self.check_cfg_item(cfg, "auth_cache"),
-            "buf_name": self.check_cfg_item(cfg, "buf_name"),
-        }
-
-        # update logger options
-        self.set_logger_options({
-            "console": False,
-            "fs": self.check_cfg_item(cfg, "log_file"),
-            "level": self.check_cfg_item(cfg, "log_level"),
-        })
-
+        super(VimFanfou, self).__init__(VIM, cfg)
         # create fanfou & oauth objects
-        self._fanfou_oauth = FanfouOAuth.FanfouOAuth({
-            "consumer_key": self.config["consumer_key"],
-            "consumer_secret": self.config["consumer_secret"],
-            "auth_cache": self.config["auth_cache"],
-        })
+        self._fanfou_oauth = VimFanfouOAuth(self.get_oauth_conf())
         self._fanfou = Fanfou.Fanfou(self._fanfou_oauth)
         self._fanfou.load_token()
 
@@ -68,6 +58,6 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
     @staticmethod
     def append_timeline(vim_buf, tm_ln):
         for item in tm_ln:
-            vim_buf.append("%s: %s <%s>\n" %
+            vim_buf.append("%s: %s |%s|\n" %
                 (item["user_name"], item["text"], item["created_at"]))
 
