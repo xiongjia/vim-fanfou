@@ -49,8 +49,7 @@ class FanfouBase(object):
         api_req = self.mk_api_req(opts)
         return self.oauth.send_req(api_req)
 
-    @staticmethod
-    def parse_rep_messages(data):
+    def parse_rep_messages(self, data):
         LOG.debug("parse rep, dataLen = %d", len(data))
         try:
             results = json.loads(data)
@@ -79,10 +78,23 @@ class FanfouBase(object):
             }
 
             if item.has_key("photo"):
-                ret_item["photo"] = item["photo"]
+                ret_item.update(self.parse_photo(item["photo"]))
 
             ret_val.append(ret_item)
 
         return ret_val
+
+    @staticmethod
+    def parse_photo(photo_data):
+        if not photo_data:
+            return {}
+        elif photo_data["largeurl"]:
+            return { "photo_url": photo_data["largeurl"] }
+        elif photo_data["imageurl"]:
+            return { "photo_url": photo_data["imageurl"] }
+        elif photo_data["thumburl"]:
+            return { "photo_url": photo_data["thumburl"] }
+        else:
+            return {}
 
 

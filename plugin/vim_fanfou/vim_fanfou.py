@@ -55,25 +55,29 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         # update timeline to buffer
         with VimUtil.VimBuffModifiable(VIM):
             buf[:] = None
+            self.add_hdr(buf, "Fanfou Home Timeline")
             self.append_timeline(buf, tm_ln)
 
-    def append_timeline(self, vim_buf, tm_ln):
-        self.add_hdr(vim_buf, "Fanfou Home Timeline")
+    @classmethod
+    def append_timeline(cls, vim_buf, tm_ln):
         for item in tm_ln:
-            vim_buf.append("%s: %s |%s|" % (
-                item["user_name"],
-                item["text"],
-                misc.parse_tm_str(item["created_at"]),
-            ))
+            if item.has_key("photo_url"):
+                line_msg = "%s: %s %s |%s|" % (
+                    item["user_name"],
+                    item["text"],
+                    item["photo_url"],
+                    misc.parse_tm_str(item["created_at"]))
+            else:
+                line_msg = "%s: %s |%s|" % (
+                    item["user_name"],
+                    item["text"],
+                    misc.parse_tm_str(item["created_at"]))
 
-    @staticmethod
-    def add_hdr(vim_buf, title):
-        print_title = ("%s*" % title)
-        VIM.vim_cmd("call setline('.', '%s')" % print_title)
-        hdr_bar = "%s*" % ("=" * (len(title) + 3))
-        vim_buf.append(hdr_bar)
+            # add to vim buf
+            vim_buf.append(line_msg)
 
     def get_timeline_count(self):
         max_timeline_count = 60
         return min(max_timeline_count, self.config["fanfou_timeline_count"])
+
 

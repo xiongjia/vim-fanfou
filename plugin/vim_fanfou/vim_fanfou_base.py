@@ -85,6 +85,10 @@ class VimFanfouBase(object):
             r"syn match fanfouTitleStar /\*$/ contained",
             "hi default link fanfouTitle Title",
             "hi default link fanfouTitleStar FanfouIgnore",
+            # web url 
+            r"syn match FanfouUrl " +
+            r"'\%(https\=://\|www\.\)[a-zA-Z0-9_./\-:@]\+'",
+            "hi default link FanfouUrl Underlined",
        ])
 
     def switch_to_buf(self, buf_name):
@@ -112,4 +116,10 @@ class VimFanfouBase(object):
             return None
         vim = self._vim.get_vim_mod()
         return vim.current.buffer
+
+    def add_hdr(self, vim_buf, title):
+        print_title = ("%s*" % title)
+        self._vim.vim_cmd("call setline('.', '%s')" % print_title)
+        hdr_bar = "%s*" % ("=" * (len(title) + 3))
+        vim_buf.append(hdr_bar)
 
