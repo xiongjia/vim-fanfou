@@ -40,7 +40,9 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
 
     def update_home_timeline(self):
         try:
-            tm_ln = self._fanfou.get_home_timeline({ "count": 3 })
+            tm_ln = self._fanfou.get_home_timeline({
+                "count": self.get_timeline_count(),
+            })
         except Exception, err:
             LOG.warn("cannot update home timline %s", err)
             return
@@ -70,4 +72,8 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         VIM.vim_cmd("call setline('.', '%s')" % print_title)
         hdr_bar = "%s*" % ("=" * (len(title) + 3))
         vim_buf.append(hdr_bar)
+
+    def get_timeline_count(self):
+        max_timeline_count = 60
+        return min(max_timeline_count, self.config["fanfou_timeline_count"])
 

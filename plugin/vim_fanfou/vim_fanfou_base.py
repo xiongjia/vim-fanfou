@@ -13,6 +13,7 @@ class VimFanfouBase(object):
         "log_file": None,
         "log_level": "debug",
         "buf_name": "VimFanfou",
+        "fanfou_timeline_count": 50,
     }
     VIM_OPTS = {
         "sytax_enabled": True
@@ -26,6 +27,8 @@ class VimFanfouBase(object):
             "consumer_secret": self.check_cfg_item(cfg, "consumer_secret"),
             "auth_cache": self.check_cfg_item(cfg, "auth_cache"),
             "buf_name": self.check_cfg_item(cfg, "buf_name"),
+            "fanfou_timeline_count":
+                self.check_cfg_item(cfg, "fanfou_timeline_count"),
         }
         # update logger options
         self.set_logger_options({
@@ -51,6 +54,8 @@ class VimFanfouBase(object):
 
     @staticmethod
     def check_cfg_item(cfg, item):
+        if not cfg.has_key(item):
+            return VimFanfouBase.DEFAULT_CFG[item]
         return cfg[item] if cfg[item] else VimFanfouBase.DEFAULT_CFG[item]
 
     @staticmethod
