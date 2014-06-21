@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import time
 from . import misc
 
 # startup logger
@@ -62,6 +63,12 @@ class VimFanfouBase(object):
     def set_logger_options(opts):
         misc.LOGGER.set_options(opts)
 
+    def update_buf_key_map(self):
+        self._vim.vim_batch([
+            "nnoremap <buffer> <silent> <Leader><Leader> " +
+            ":FanfouRefresh<cr>"
+        ])
+
     def update_buf_syntax(self):
         if not self.VIM_OPTS["sytax_enabled"]:
             return
@@ -85,7 +92,7 @@ class VimFanfouBase(object):
             r"syn match fanfouTitleStar /\*$/ contained",
             "hi default link fanfouTitle Title",
             "hi default link fanfouTitleStar FanfouIgnore",
-            # web url 
+            # web url
             r"syn match FanfouUrl " +
             r"'\%(https\=://\|www\.\)[a-zA-Z0-9_./\-:@]\+'",
             "hi default link FanfouUrl Underlined",
@@ -109,6 +116,7 @@ class VimFanfouBase(object):
                 "setlocal filetype=fanfouvim",
             ])
             self.update_buf_syntax()
+            self.update_buf_key_map()
 
         cur_buf_name = self._vim.vim_eval("bufname('%')")
         if cur_buf_name != buf_name:
@@ -117,9 +125,13 @@ class VimFanfouBase(object):
         vim = self._vim.get_vim_mod()
         return vim.current.buffer
 
-    def add_hdr(self, vim_buf, title):
-        print_title = ("%s*" % title)
+    def add_hdr(self, vim_buf, title, add_tm = True):
+        if add_tm:
+            print_title = "%s (%s)*" % (title, time.ctime())
+        else:
+            print_title = "%s*" % title
         self._vim.vim_cmd("call setline('.', '%s')" % print_title)
-        hdr_bar = "%s*" % ("=" * (len(title) + 3))
+        hdr_bar = "%s*" % ("=" * (len(print_title) + 3))
         vim_buf.append(hdr_bar)
+
 

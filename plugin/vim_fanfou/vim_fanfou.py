@@ -58,6 +58,9 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             self.add_hdr(buf, "Fanfou Home Timeline")
             self.append_timeline(buf, tm_ln)
 
+    def refresh(self):
+        self.update_home_timeline()
+
     @classmethod
     def append_timeline(cls, vim_buf, tm_ln):
         for item in tm_ln:

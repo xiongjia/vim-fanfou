@@ -42,12 +42,28 @@ cfg = {
 vim_fanfou.VimFanfou.init(cfg)
 end_python
 
-function! FanfouTest()
+" get Fanfou home timeline
+function! s:update_home_timeline()
 python << end_python
 from vim_fanfou import vim_fanfou
 VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
-
 VIM_FANFOU.update_home_timeline()
 end_python
 endfunction
+
+function! s:refresh()
+python << end_python
+from vim_fanfou import vim_fanfou
+VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
+VIM_FANFOU.refresh()
+end_python
+endfunction
+
+" VIM commands
+if !exists(":FanfouHomeTimeline")
+    command FanfouHomeTimeline :call s:update_home_timeline()
+endif
+if !exists(":FanfouRefresh")
+    command FanfouRefresh :call s:refresh()
+endif
 
