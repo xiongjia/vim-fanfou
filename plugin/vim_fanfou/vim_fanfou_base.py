@@ -63,6 +63,8 @@ class VimFanfouBase(object):
 
         self._vim.vim_batch([
             "syntax clear",
+            # fanfou ignore schema
+            "hi FanfouIgnore guifg=bg ctermfg=0",
             # username
             r"syn match fanfouUsr /^.\{-1,}:/",
             "hi default link fanfouUsr Identifier",
@@ -70,8 +72,14 @@ class VimFanfouBase(object):
             "hi FanfouTimeBar guifg=bg ctermfg=0",
             r"syn match fanfouTime /|[^|]\+|$/ contains=fanfouTimeBar",
             r"syn match fanfouTimeBar /|/ contained",
-            "hi default link fanfouTimeBar FanfouTimeBar",
+            "hi default link fanfouTimeBar FanfouIgnore",
             "hi default link fanfouTime String",
+            # title
+            r"syn match fanfouTitle " +
+            r"/^\%(\w\+:\)\@!.\+\*$/ contains=fanfouTitleStar",
+            r"syn match fanfouTitleStar /\*$/ contained",
+            "hi default link fanfouTitle Title",
+            "hi default link fanfouTitleStar FanfouIgnore",
        ])
 
     def switch_to_buf(self, buf_name):

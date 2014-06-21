@@ -66,6 +66,8 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
 
     @staticmethod
     def add_hdr(vim_buf, title):
-        VIM.vim_cmd("call setline('.', '%s')" % title)
-        vim_buf.append("======================")
+        print_title = ("%s*" % title)
+        VIM.vim_cmd("call setline('.', '%s')" % print_title)
+        hdr_bar = "%s*" % ("=" * (len(title) + 3))
+        vim_buf.append(hdr_bar)
 
