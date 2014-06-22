@@ -15,6 +15,7 @@ class VimFanfouBase(object):
         "log_level": "debug",
         "buf_name": "VimFanfou",
         "fanfou_timeline_count": 50,
+        "fanfou_http_proxy": None,
     }
     VIM_OPTS = {
         "sytax_enabled": True
@@ -23,14 +24,14 @@ class VimFanfouBase(object):
     def __init__(self, vim_util, cfg):
         self._vim = vim_util
         # check config
-        self.config = {
-            "consumer_key": self.check_cfg_item(cfg, "consumer_key"),
-            "consumer_secret": self.check_cfg_item(cfg, "consumer_secret"),
-            "auth_cache": self.check_cfg_item(cfg, "auth_cache"),
-            "buf_name": self.check_cfg_item(cfg, "buf_name"),
-            "fanfou_timeline_count":
-                self.check_cfg_item(cfg, "fanfou_timeline_count"),
-        }
+        self.config = self.mk_cfg_items(cfg, [
+            "consumer_key",
+            "consumer_secret",
+            "auth_cache",
+            "buf_name",
+            "fanfou_http_proxy",
+            "fanfou_timeline_count",
+        ])
         # update logger options
         self.set_logger_options({
             "console": False,
@@ -39,6 +40,9 @@ class VimFanfouBase(object):
         })
         # update vim settings
         self.update_vim_settings()
+        # update http proxy
+        if self.config["fanfou_http_proxy"]:
+            misc.install_urllib_proxy(self.config["fanfou_http_proxy"])
 
     def update_vim_settings(self):
         if self._vim.vim_eval("has('syntax') && exists('g:syntax_on')"):
@@ -52,6 +56,13 @@ class VimFanfouBase(object):
             "consumer_secret": self.config["consumer_secret"],
             "auth_cache": self.config["auth_cache"],
         }
+
+    @staticmethod
+    def mk_cfg_items(cfg, cfg_items):
+        ret_cfg = {}
+        for cfg_item in cfg_items:
+            ret_cfg[cfg_item] = VimFanfouBase.check_cfg_item(cfg, cfg_item)
+        return ret_cfg
 
     @staticmethod
     def check_cfg_item(cfg, item):

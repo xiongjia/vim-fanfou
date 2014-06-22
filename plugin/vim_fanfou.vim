@@ -37,6 +37,7 @@ cfg = {
     "log_file": VIM.get_val("g:fanfou_log_file"),
     "log_level": VIM.get_val("g:fanfou_log_level"),
     "buf_name": VIM.get_val("g:fanfou_buf_name"),
+    "fanfou_http_proxy": VIM.get_val("g:fanfou_http_proxy"),
 }
 vim_fanfou.VimFanfou.init(cfg)
 end_python

@@ -8,7 +8,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
-import os, sys, logging, ConfigParser, time
+import os, sys, logging, ConfigParser, time, urllib2
 from email import utils as emailutils
 
 def resolve_usr_filename(filename):
@@ -178,6 +178,17 @@ def parse_tm_str(tm_str):
         return tm_str
     else:
         return local_tm
+
+def install_urllib_proxy(http_proxy):
+    LOG.debug("install proxy %s", http_proxy)
+    if not http_proxy:
+        return
+    try:
+        proxy_hdlr = urllib2.ProxyHandler({ 'http': http_proxy })
+        opener = urllib2.build_opener(proxy_hdlr)
+        urllib2.install_opener(opener)
+    except Exception, err:
+        LOG.error("Cannot install proxy %s; err: %s", http_proxy, err)
 
 def main():
     """Test function"""
