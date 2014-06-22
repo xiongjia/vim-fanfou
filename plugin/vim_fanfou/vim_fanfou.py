@@ -38,18 +38,33 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
     def get_instance():
         return VimFanfou.VIM_FANFOU
 
+    def post_status(self, msg):
+        VIM.show_msg_normal("Posting status ...")
+        try:
+            self._fanfou.statuses_update(msg)
+        except Exception, err:
+            VIM.show_msg_err("Cannot post status: %s" % err)
+            return
+
+        # display finish message
+        VIM.show_msg_normal("Your status was sent.")
+
     def update_home_timeline(self):
+        VIM.show_msg_normal("Updating Home Timeline ...")
         try:
             tm_ln = self._fanfou.get_home_timeline({
                 "count": self.get_timeline_count(),
             })
         except Exception, err:
             LOG.warn("cannot update home timline %s", err)
+            VIM.show_msg_err("Cannot update Home Timeline; error %s" % err)
             return
 
         buf = self.switch_to_buf(self.config["buf_name"])
         if not buf:
             LOG.error("create switch to fanfou buf")
+            VIM.show_msg_err("Cannot update Home Timeline;"
+                " Cannot create a new buffer.")
             return
 
         # update timeline to buffer
@@ -57,6 +72,10 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             buf[:] = None
             self.add_hdr(buf, "Fanfou Home Timeline")
             self.append_timeline(buf, tm_ln)
+
+        # display finish message
+        VIM.show_msg_normal("Home Timeline has updated")
+
 
     def refresh(self):
         self.update_home_timeline()

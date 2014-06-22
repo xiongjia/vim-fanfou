@@ -30,7 +30,7 @@ class VimUtil(object):
         self.vim_batch([
             "redraw",
             "echohl %s" % level,
-            "echomsg %s" % msg,
+            "echomsg '%s'" % msg.replace("'", " ").replace("\"", " "),
             "echohl None",
         ])
 

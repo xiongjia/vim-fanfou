@@ -18,15 +18,14 @@ if v:version < 700
 endif
 
 " Set the loaded flag
-let loaded_mytestplugin = 1
+let loaded_vimfanfou = 1
 
 " Startup vim_fanfou
-" TODO: load consumer_key from config file
+" ==================
 python << end_python
 # update import path
 import sys, vim
 sys.path.append(vim.eval('expand("<sfile>:h")'))
-
 # import vim_fanfou.py and startup it
 from vim_fanfou import vim_fanfou
 VIM = vim_fanfou.VIM
@@ -51,6 +50,20 @@ VIM_FANFOU.update_home_timeline()
 end_python
 endfunction
 
+" post status
+function! s:post_status()
+    call inputsave()
+    redraw
+    let mesg = input("Status: ")
+    call inputrestore()
+python << end_python
+from vim_fanfou import vim_fanfou
+VIM = vim_fanfou.VIM
+VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
+VIM_FANFOU.post_status(VIM.get_val("mesg"))
+end_python
+endfunction
+
 function! s:refresh()
 python << end_python
 from vim_fanfou import vim_fanfou
@@ -63,7 +76,12 @@ endfunction
 if !exists(":FanfouHomeTimeline")
     command FanfouHomeTimeline :call s:update_home_timeline()
 endif
+
 if !exists(":FanfouRefresh")
     command FanfouRefresh :call s:refresh()
+endif
+
+if !exists(":FanfouPostStatus")
+    command FanfouPostStatus :call s:post_status()
 endif
 

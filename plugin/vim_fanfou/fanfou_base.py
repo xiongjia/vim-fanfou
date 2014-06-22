@@ -49,40 +49,41 @@ class FanfouBase(object):
         api_req = self.mk_api_req(opts)
         return self.oauth.send_req(api_req)
 
-    def parse_rep_messages(self, data):
-        LOG.debug("parse rep, dataLen = %d", len(data))
-        try:
-            results = json.loads(data)
-        except Exception, err:
-            LOG.error("Invalid JSON object")
-            raise err
-
+    @staticmethod
+    def _parse_json_messages(data):
         ret_val = []
-        LOG.debug("parse msg, len=%d", len(results))
-        msg_keys = ("id", "text", "created_at", "user")
-        usr_keys = ("id", "name")
-        for item in results:
-            if misc.chk_keys(msg_keys, item.keys()) != True:
+        LOG.debug("parse messages, len=%d", len(data))
+        for item in data:
+            ret_item = FanfouBase._parse_json_message(item)
+            if not ret_item:
                 continue
-
-            usr = item["user"]
-            if misc.chk_keys(usr_keys, usr.keys()) != True:
-                continue
-
-            ret_item = {
-                "id": item["id"],
-                "text": item["text"],
-                "created_at": item["created_at"],
-                "user_id": usr["id"],
-                "user_name": usr["name"],
-            }
-
-            if item.has_key("photo"):
-                ret_item.update(self.parse_photo(item["photo"]))
-
             ret_val.append(ret_item)
 
         return ret_val
+
+    @staticmethod
+    def _parse_json_message(data):
+        msg_keys = ("id", "text", "created_at", "user")
+        usr_keys = ("id", "name")
+        if misc.chk_keys(msg_keys, data.keys()) != True:
+            return None
+
+        usr = data["user"]
+        if misc.chk_keys(usr_keys, usr.keys()) != True:
+            return None
+
+        ret_item = {
+            "id": data["id"],
+            "text": data["text"],
+            "created_at": data["created_at"],
+            "user_id": usr["id"],
+            "user_name": usr["name"],
+        }
+
+        if data.has_key("photo"):
+            ret_item.update(FanfouBase.parse_photo(data["photo"]))
+
+        return ret_item
 
     @staticmethod
     def parse_photo(photo_data):
@@ -97,4 +98,21 @@ class FanfouBase(object):
         else:
             return {}
 
+    def parse_rep_messages(self, data):
+        LOG.debug("parse rep, dataLen = %d", len(data))
+        try:
+            results = json.loads(data)
+        except Exception, err:
+            LOG.error("Invalid JSON object")
+            raise err
+        return self._parse_json_messages(results)
+
+    def parse_rep_message(self, data):
+        LOG.debug("parse rep, dataLen = %d", len(data))
+        try:
+            results = json.loads(data)
+        except Exception, err:
+            LOG.error("Invalid JSON object")
+            raise err
+        return self._parse_json_message(results)
 

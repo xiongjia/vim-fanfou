@@ -126,7 +126,7 @@ def main():
     misc.LOGGER.set_options({ "level": "debug", "console": True })
     LOG.debug("fanfou oauth")
 
-    oauth_cfg = misc.load_fanfou_oaut_config(".fanfou.cfg")
+    oauth_cfg = misc.load_fanfou_oauth_config(".fanfou.cfg")
     ff_oauth = FanfouOAuth(oauth_cfg)
     acc_token = ff_oauth.get_cached_acc_token()
     LOG.debug("acc token %s", acc_token)

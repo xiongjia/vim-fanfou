@@ -18,7 +18,15 @@ class Fanfou(FanfouBase.FanfouBase):
         }
 
     def statuses_update(self, status):
-        # post the request
+        # check status length
+        status_len = len(status)
+        if status_len > 140:
+            raise Exception("Invalid status; Too many characters. " +
+                            "It was not sent.")
+        elif status_len < 0:
+            raise Exception("Invalid status; It's empty. It was not sent.")
+
+        # send status
         data = { "status": status }
         try:
             rep_data = self.send_api_req({
@@ -29,8 +37,9 @@ class Fanfou(FanfouBase.FanfouBase):
         except Exception, err:
             LOG.error("cannot update status, err %s", err)
             raise err
-        # parse response
-        return self.parse_rep_messages(rep_data)
+
+        # parse post message result
+        return self.parse_rep_message(rep_data)
 
     def get_home_timeline(self, opts):
         data = {
@@ -56,7 +65,7 @@ def main():
     misc.LOGGER.set_options({ "level": "debug", "console": True })
     LOG.debug("fanfou")
 
-    oauth_cfg = misc.load_fanfou_oaut_config(".fanfou.cfg")
+    oauth_cfg = misc.load_fanfou_oauth_config(".fanfou.cfg")
     ff_oauth = FanfouOAuth.FanfouOAuth(oauth_cfg)
     fanfou = Fanfou(ff_oauth)
     fanfou.load_token()
@@ -66,11 +75,10 @@ def main():
     # for tm_ln in tm_lines:
     #     LOG.debug("usr: %s (%s) - msg: %s",
     #         tm_ln["user_name"], tm_ln["created_at"], tm_ln["text"])
-    #     if tm_ln.has_key("photo"):
-    #         LOG.debug("photo: %s", tm_ln["photo"])
     #     LOG.debug("---------------------")
     # > Status post
-    # fanfou.statuses_update("Fanfou OAuth Test")
+    # ret_item = fanfou.statuses_update("Fanfou API Test")
+    # LOG.debug("post %s", ret_item)
 
 if __name__ == "__main__":
     main()

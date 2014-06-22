@@ -1,9 +1,21 @@
 #!/usr/bin/env python
+"""
+    vim_fanfou.misc:
+    ~~~~~~~~~~~~~~~~
+    The utility functions or objects.
+
+    :copyright: (c) 2014 by xiong-jia.le ( lexiongjia@gmail.com )
+    :license: MIT, see LICENSE for more details.
+"""
 
 import os, sys, logging, ConfigParser, time
 from email import utils as emailutils
 
 def resolve_usr_filename(filename):
+    """Resolve the filename to an absolute path.
+
+    :param filename: The input file name.
+    """
     full_filename = filename
     if os.path.isabs(full_filename) == False:
         full_filename = os.path.join(os.path.expanduser("~"),
@@ -12,6 +24,8 @@ def resolve_usr_filename(filename):
 
 # logging object
 class Log(object):
+    """It's a simple wrapper of python built-in logging object."""
+    # logger levels map
     _LEVELS = {
         "error": logging.ERROR,
         "debug": logging.DEBUG,
@@ -21,6 +35,10 @@ class Log(object):
     }
 
     def __init__(self, opts):
+        """The constructor of Log object.
+
+        :param opts: It's a dict of Log configuration.
+        """
         self._logger = logging.getLogger()
         self._logger.addHandler(logging.NullHandler())
         self._hdlr = {}
@@ -28,6 +46,10 @@ class Log(object):
         self.set_options(opts)
 
     def set_options(self, opts):
+        """To update logging configuration with the parameters
+
+        :param opts: The log configuration.
+        """
         # enable/disable console logger
         if opts.get("console", False):
             self._enable_console_logger()
@@ -48,29 +70,45 @@ class Log(object):
         # update disable/enable flag
         self.set_disable(opts.get("disable", False))
 
-    def get_log_level(self, log_level):
-        return self._LEVELS.get(log_level, logging.INFO)
+    @staticmethod
+    def get_log_level(log_level):
+        """Return the logging.level
+
+        :param log_level: The description of the log level. (e.g. "info")
+        """
+        return Log._LEVELS.get(log_level, logging.INFO)
 
     def get_logger(self):
+        """Return the logger instance"""
         return self._logger
 
     def set_disable(self, disable):
+        """Disable/Enable logger output
+
+        :param disable: True = disable log; False = Enable log
+        """
         # disable/enable the logger
         self._logger.disabled = disable
 
     def _enable_console_logger(self):
+        """Enable console (stdout) Logger handler"""
         # enable console logger
         if self._hdlr.has_key("console") != True:
             self._hdlr["console"] = logging.StreamHandler(sys.stdout)
             self._logger.addHandler(self._hdlr["console"])
 
     def _disable_console_logger(self):
+        """Disable console (stdout) Logger handler"""
         # disable console logger
         if self._hdlr.has_key("console"):
             self._logger.removeHandler(self._hdlr["console"])
             del self._hdlr["console"]
 
     def _enable_fs_logger(self, filename):
+        """Enable file Logger handler
+
+        :param filename: the log file name.
+        """
         # close old fs stream
         if self._hdlr.has_key("fs"):
             self._disable_fs_logger()
@@ -81,6 +119,7 @@ class Log(object):
         self._logger.addHandler(self._hdlr["fs"])
 
     def _disable_fs_logger(self):
+        """Disable file Logger handler"""
         # disable fs logger
         if self._hdlr.has_key("fs"):
             self._logger.removeHandler(self._hdlr["fs"])
@@ -91,9 +130,12 @@ class Log(object):
 LOGGER = Log({ "level": "error", "console": False })
 LOG = LOGGER.get_logger()
 
-def load_fanfou_oaut_config(conf_filename):
-    full_filename = resolve_usr_filename(conf_filename)
+def load_fanfou_oauth_config(conf_filename):
+    """Load fanfou oauth config from a file (This function only for test)
 
+    :param conf_filename: configuration filename
+    """
+    full_filename = resolve_usr_filename(conf_filename)
     LOG.debug("Load oauth config from %s", full_filename)
     try:
         cfg = ConfigParser.RawConfigParser()
@@ -104,17 +146,29 @@ def load_fanfou_oaut_config(conf_filename):
             "auth_cache": cfg.get("fanfou", "auth_cache"),
         }
     except Exception, err:
-        LOG.warn("Cannot load config from %s; err %s",
+        LOG.warn("Cannot load oauth config from %s; err %s",
             full_filename, err)
         raise err
 
 def chk_keys(keys, src_list):
+    """Check the keys are included in the src_list
+
+    :param keys: the keys need to check
+    :param src_list: the source list
+    """
     for key in keys:
         if key not in src_list:
             return False
     return True
 
 def parse_tm_str(tm_str):
+    """Parse a time string and return the local ctime string.
+    The python built-in Time module cannot parse time zone info.
+    Therefore, we create this function.
+
+    :param tm_str: The source time string.
+        (e.g. Fri Jun 20 14:00:03 +0000 2014)
+    """
     try:
         tm_tuple = emailutils.parsedate_tz(tm_str)
         tm_val = emailutils.mktime_tz(tm_tuple)
@@ -125,15 +179,15 @@ def parse_tm_str(tm_str):
     else:
         return local_tm
 
-# The test entry function
 def main():
+    """Test function"""
     LOGGER.set_options({
         "level": "debug",
         "console": True,
         "fs": "vim-fanfou.log",
     })
     LOG.debug("misc")
-    cfg = load_fanfou_oaut_config(".fanfou.cfg")
+    cfg = load_fanfou_oauth_config(".fanfou.cfg")
     LOG.debug("oauth config %s", cfg)
 
     tm_str = parse_tm_str("Fri Jun 20 14:00:03 +0000 2014")
