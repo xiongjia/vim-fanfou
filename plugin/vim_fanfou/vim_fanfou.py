@@ -88,14 +88,14 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         for item in tm_ln:
             if item.has_key("photo_url"):
                 line_msg = "%s: %s %s |%s|" % (
-                    item["user_name"],
-                    item["text"],
-                    item["photo_url"],
+                    item["user_name"].encode("utf8"),
+                    item["text"].encode("utf8"),
+                    item["photo_url"].encode("utf8"),
                     misc.parse_tm_str(item["created_at"]))
             else:
                 line_msg = "%s: %s |%s|" % (
-                    item["user_name"],
-                    item["text"],
+                    item["user_name"].encode("utf8"),
+                    item["text"].encode("utf8"),
                     misc.parse_tm_str(item["created_at"]))
 
             # add to vim buf

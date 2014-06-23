@@ -125,9 +125,8 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
 def main():
     misc.LOGGER.set_options({ "level": "debug", "console": True })
     LOG.debug("fanfou oauth")
-
-    oauth_cfg = misc.load_fanfou_oauth_config(".fanfou.cfg")
-    ff_oauth = FanfouOAuth(oauth_cfg)
+    # oauth_cfg = misc.load_fanfou_oauth_config(".fanfou.cfg")
+    # ff_oauth = FanfouOAuth(oauth_cfg)
     # acc_token = ff_oauth.get_new_acc_token()
     # LOG.debug("acc token %s", acc_token)
     # nonce = ff_oauth.generate_nonce()
