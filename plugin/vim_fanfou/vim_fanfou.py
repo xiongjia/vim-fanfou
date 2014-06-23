@@ -27,7 +27,10 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         # create fanfou & oauth objects
         self._fanfou_oauth = VimFanfouOAuth(self.get_oauth_conf())
         self._fanfou = Fanfou.Fanfou(self._fanfou_oauth)
-        self._fanfou.load_token()
+        try:
+            self._fanfou.load_token()
+        except Exception, err:
+            LOG.warn("Cannot load oauth token; err %s", err)
 
     @staticmethod
     def init(cfg):
@@ -43,7 +46,7 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         try:
             self._fanfou.statuses_update(msg)
         except Exception, err:
-            VIM.show_msg_err("Cannot post status: %s" % err)
+            VIM.show_msg_err("Cannot post status; err: %s" % err)
             return
 
         # display finish message
@@ -57,14 +60,14 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             })
         except Exception, err:
             LOG.warn("cannot update home timline %s", err)
-            VIM.show_msg_err("Cannot update Home Timeline; error %s" % err)
+            VIM.show_msg_err("Cannot update Home Timeline; err: %s" % err)
             return
 
         buf = self.switch_to_buf(self.config["buf_name"])
         if not buf:
             LOG.error("create switch to fanfou buf")
             VIM.show_msg_err("Cannot update Home Timeline;"
-                " Cannot create a new buffer.")
+                "err: Cannot create a new buffer.")
             return
 
         # update timeline to buffer
@@ -102,4 +105,12 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         max_timeline_count = 60
         return min(max_timeline_count, self.config["fanfou_timeline_count"])
 
+    def login(self):
+        try:
+            acc_token = self._fanfou_oauth.get_new_acc_token()
+            self._fanfou_oauth.update_auth_cache(acc_token)
+        except Exception, err:
+            VIM.show_msg_err("Cannot get OAuth token; err: %s" % err)
+        else:
+            VIM.show_msg_normal("Fanfou OAuth Token is saved")
 

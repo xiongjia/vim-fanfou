@@ -73,6 +73,14 @@ VIM_FANFOU.refresh()
 end_python
 endfunction
 
+function! s:login()
+python << end_python
+from vim_fanfou import vim_fanfou
+VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
+VIM_FANFOU.login()
+end_python
+endfunction
+
 " VIM commands
 if !exists(":FanfouHomeTimeline")
     command FanfouHomeTimeline :call s:update_home_timeline()
@@ -84,5 +92,13 @@ endif
 
 if !exists(":FanfouPostStatus")
     command FanfouPostStatus :call s:post_status()
+endif
+
+if !exists(":FanfouSetAccount")
+    command FanfouSetAccount :call s:login()
+endif
+
+if !exists(":FanfouSwitchAccount")
+    command FanfouSwitchAccount :call s:login()
 endif
 
