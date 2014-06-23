@@ -15,7 +15,7 @@ class VimFanfouOAuth(FanfouOAuth.FanfouOAuth):
         super(VimFanfouOAuth, self).__init__(cfg)
 
     @classmethod
-    def get_instance(cls, prompt):
+    def get_input(cls, prompt):
         return VIM.vim_input(prompt)
 
 
@@ -99,7 +99,11 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
                     misc.parse_tm_str(item["created_at"]))
 
             # add to vim buf
-            vim_buf.append(line_msg)
+            line_msg = line_msg.replace("\n", " ")
+            try:
+                vim_buf.append(line_msg)
+            except Exception, err:
+                LOG.warn("cannot append message to buf; err %s", err)
 
     def get_timeline_count(self):
         max_timeline_count = 60
@@ -113,4 +117,9 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             VIM.show_msg_err("Cannot get OAuth token; err: %s" % err)
         else:
             VIM.show_msg_normal("Fanfou OAuth Token is saved")
+
+        try:
+            self._fanfou.load_token()
+        except Exception, err:
+            LOG.warn("cannot load acc token; err: %s", err)
 

@@ -38,7 +38,7 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
         try:
             rep_data = self.send_oauth_req({
                 "method": "GET",
-                "base_url": self.urls["unauth_request_token"],
+                "base_url": self.urls["unauth_req_token"],
                 "req_data": data,
                 "auth_keys": [self.oauth_config["consumer_secret"]],
             })
@@ -65,7 +65,7 @@ class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):
         LOG.debug("token %s (%s)", oauth_token, oauth_token_secret)
 
         auth_url = ("%s?oauth_token=%s&oauth_callback=oob" % (
-            self.urls["url_authorize"], oauth_token))
+            self.urls["authorize"], oauth_token))
         LOG.debug(auth_url)
 
         # Open the authorize page and waitting the "PIN" code
@@ -128,7 +128,7 @@ def main():
 
     oauth_cfg = misc.load_fanfou_oauth_config(".fanfou.cfg")
     ff_oauth = FanfouOAuth(oauth_cfg)
-    acc_token = ff_oauth.get_cached_acc_token()
+    acc_token = ff_oauth.get_new_acc_token()
     LOG.debug("acc token %s", acc_token)
 
 if __name__ == "__main__":
