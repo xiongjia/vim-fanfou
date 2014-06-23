@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import time, webbrowser, ConfigParser
-import binascii, uuid, hmac, hashlib
+import binascii, hmac, hashlib, random
 import urllib, urllib2
 from . import misc
 
@@ -22,8 +22,11 @@ class FanfouOAuthBase(object):
         return FanfouOAuthBase._escape(str(int(time.time())))
 
     @staticmethod
-    def generate_nonce():
-        return FanfouOAuthBase._escape(binascii.b2a_hex(uuid.uuid4().bytes))
+    def generate_nonce(length = 8):
+        random_data = range(length)
+        for i in range(length):
+            random_data[i] = str(random.randint(0, 9))
+        return FanfouOAuthBase._escape("".join(random_data))
 
     @staticmethod
     def get_full_cache_filename(filename):
