@@ -4,8 +4,6 @@ import urlparse
 
 from . import fanfou_oauth_base as FanfouOAuthBase
 from . import misc
-
-# startup logger
 LOG = misc.LOGGER.get_logger()
 
 class FanfouOAuth(FanfouOAuthBase.FanfouOAuthBase):

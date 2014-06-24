@@ -2,8 +2,6 @@
 
 import json
 from . import misc
-
-# startup logger
 LOG = misc.LOGGER.get_logger()
 
 class FanfouBase(object):

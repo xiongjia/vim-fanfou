@@ -2,8 +2,6 @@
 
 import time
 from . import misc
-
-# startup logger
 LOG = misc.LOGGER.get_logger()
 
 class VimFanfouBase(object):

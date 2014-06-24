@@ -5,8 +5,6 @@ from . import fanfou_oauth as FanfouOAuth
 from . import fanfou as Fanfou
 from . import vim_util as VimUtil
 from . import vim_fanfou_base as VimFanfouBase
-
-# startup logger and VIM util
 LOG = misc.LOGGER.get_logger()
 VIM = VimUtil.VimUtil()
 
@@ -78,7 +76,7 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
                 "err: Cannot update vim buffer.")
         else:
             # display finish message
-            VIM.show_msg_normal("Home Timeline has updated")
+            VIM.show_msg_normal("Home Timeline has been updated")
 
     def _show_cur_tm_line(self, title):
         buf = self.switch_to_buf(self.config["buf_name"])
@@ -116,7 +114,7 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             try:
                 vim_buf.append(line_msg)
             except Exception, err:
-                LOG.warn("cannot append message to buf; err %s", err)
+                LOG.warn("Cannot append message to buf; err %s", err)
 
     def get_timeline_count(self):
         max_timeline_count = 60
@@ -134,5 +132,5 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         try:
             self._fanfou.load_token()
         except Exception, err:
-            LOG.warn("cannot load acc token; err: %s", err)
+            LOG.warn("Cannot load OAuth Token; err: %s", err)
 

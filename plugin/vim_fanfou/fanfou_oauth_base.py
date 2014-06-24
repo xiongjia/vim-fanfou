@@ -4,8 +4,6 @@ import time, webbrowser, ConfigParser
 import binascii, hmac, hashlib, random
 import urllib, urllib2
 from . import misc
-
-# startup logger
 LOG = misc.LOGGER.get_logger()
 
 class FanfouOAuthBase(object):

@@ -2,8 +2,6 @@
 
 from . import fanfou_base as FanfouBase
 from . import misc
-
-# startup logger
 LOG = misc.LOGGER.get_logger()
 
 class Fanfou(FanfouBase.FanfouBase):

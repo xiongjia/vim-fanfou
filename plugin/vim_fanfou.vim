@@ -1,19 +1,25 @@
-" vim fanfou client
+" ==============================================================
+" vim_fanfou - Fanfou client for VIM
+" git repository: https://github.com/xiongjia/vim-fanfou.git
+" Version: 0.0.1
+" Language: Python + Vim script
+" Maintainer: LeXiongJia <lexiongjia@gmail.com>
+" ==============================================================
 
 " Load this module only once.
 if exists('loaded_vimfanfou')
     finish
 endif
 
-" Check vim python runtime
+" Check VIM python runtime
 if !has('python')
-    echo "Error: Required vim compiled with +python"
+    echo "Error: Required VIM compiled with +python"
     finish
 endif
 
-" Check vim version
+" Check VIM version
 if v:version < 700
-    echo "Error: Required vim version 7+"
+    echo "Error: Required VIM version 7+"
     finish
 endif
 
@@ -75,6 +81,7 @@ VIM_FANFOU.post_status(VIM.get_val("mesg"))
 end_python
 endfunction
 
+" refresh
 function! s:refresh()
     call s:init()
 python << end_python
@@ -93,7 +100,7 @@ VIM_FANFOU.login()
 end_python
 endfunction
 
-" VIM commands
+" Exports VIM commands
 if !exists(":FanfouHomeTimeline")
     command FanfouHomeTimeline :call s:update_home_timeline()
 endif
