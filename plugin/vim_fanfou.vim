@@ -44,10 +44,10 @@ end_python
 endfunction
 
 function! s:init()
-    if !exists('loaded_py_mod')
+    if !exists('s:loaded_py_mod')
         call s:load_py_mod()
-        let load_py_mod = 1
     endif
+    let s:loaded_py_mod = 1
 endfunction
 
 " get Fanfou home timeline
