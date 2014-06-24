@@ -20,8 +20,8 @@ endif
 " Set the loaded flag
 let loaded_vimfanfou = 1
 
-" Startup vim_fanfou
-" ==================
+" load python modules
+function! s:load_py_mod()
 python << end_python
 # update import path
 import sys, vim
@@ -41,9 +41,18 @@ cfg = {
 }
 vim_fanfou.VimFanfou.init(cfg)
 end_python
+endfunction
+
+function! s:init()
+    if !exists('loaded_py_mod')
+        call s:load_py_mod()
+        let load_py_mod = 1
+    endif
+endfunction
 
 " get Fanfou home timeline
 function! s:update_home_timeline()
+    call s:init()
 python << end_python
 from vim_fanfou import vim_fanfou
 VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
@@ -53,6 +62,7 @@ endfunction
 
 " post status
 function! s:post_status()
+    call s:init()
     call inputsave()
     redraw
     let mesg = input("Status: ")
@@ -66,6 +76,7 @@ end_python
 endfunction
 
 function! s:refresh()
+    call s:init()
 python << end_python
 from vim_fanfou import vim_fanfou
 VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
@@ -74,6 +85,7 @@ end_python
 endfunction
 
 function! s:login()
+    call s:init()
 python << end_python
 from vim_fanfou import vim_fanfou
 VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
