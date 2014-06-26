@@ -17,7 +17,7 @@ class Fanfou(FanfouBase.FanfouBase):
 
     def statuses_update(self, status):
         # check status length
-        status_len = len(status)
+        status_len = misc.mbstrlen(status)
         if status_len > 140:
             raise Exception("Invalid status; Too many characters. " +
                             "It was not sent.")

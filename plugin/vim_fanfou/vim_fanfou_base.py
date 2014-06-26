@@ -1,10 +1,20 @@
 #!/usr/bin/env python
+"""
+    vim_fanfou.vim_fanfou_base:
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    The base object for vim_fanfou
+
+    :copyright: (c) 2014 by xiong-jia.le ( lexiongjia@gmail.com )
+    :license: MIT, see LICENSE for more details.
+"""
 
 import time
 from . import misc
 LOG = misc.LOGGER.get_logger()
 
 class VimFanfouBase(object):
+    """The base object for VimFanfou"""
+    # default configurations
     DEFAULT_CFG = {
         "consumer_key": "df51b20a9dcd93e13abe1f22389f5372",
         "consumer_secret": "1a3cfd7b5b752e5521c7b26ae07b2401",

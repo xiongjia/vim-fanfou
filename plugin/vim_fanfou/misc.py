@@ -190,6 +190,16 @@ def install_urllib_proxy(http_proxy):
     except Exception, err:
         LOG.error("Cannot install proxy %s; err: %s", http_proxy, err)
 
+def mbstrlen(src):
+    """Return the 'src' string (Multibytes ASCII string) length.
+    :param src: the source string
+    """
+    try:
+        return len(src.decode("utf8", errors = "replace"))
+    except Exception, err:
+        LOG.error("String convert issue %s", err)
+        return len(src)
+
 def main():
     """Test function"""
     LOGGER.set_options({
