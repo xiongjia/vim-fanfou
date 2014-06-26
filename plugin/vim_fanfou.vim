@@ -25,16 +25,15 @@ endif
 
 " Set the loaded flag
 let loaded_vimfanfou = 1
-
-python << end_python
-# update import path
-import sys, vim
-sys.path.append(vim.eval('expand("<sfile>:h")'))
-end_python
+let s:loaded_vimfanfou_path = expand("<sfile>:h")
 
 " load python modules
 function! s:load_py_mod()
 python << end_python
+# update import path
+import sys, vim
+sys.path.append(vim.eval("s:loaded_vimfanfou_path"))
+
 # import vim_fanfou.py and startup it
 from vim_fanfou import vim_fanfou
 VIM = vim_fanfou.VIM
