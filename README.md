@@ -1,10 +1,7 @@
 # Vim-Fanfou
-
 Fanfou is a Twitter clone. 
 Vim-fanfou is a TwitVim clone ( https://github.com/vim-scripts/TwitVim ).
-
-Vim-Fanfou is a Vim plugin that allows you to post to status and
-view Fanfou timeline.
+This Vim plugin allows you to post to status and view Fanfou timeline.
 
 # Installation
  - Requirements:   
