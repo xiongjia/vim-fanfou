@@ -42,4 +42,5 @@ Vim-fanfou is distributed under the same terms as VIM itself. See :help license.
 
 # Contact
  - The maintainer: @Xiongjia_Le ( http://fanfou.com/xiongjia_le ) 
+ - www.VIM.org: http://www.vim.org/scripts/script.php?script_id=4972
 
