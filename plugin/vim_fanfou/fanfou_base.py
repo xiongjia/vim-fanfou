@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+"""
+    vim_fanfou.fanfou_base:
+    ~~~~~~~~~~~~~~~~~~~~~~~
+    FanfouBase implemented all the base functions for Fanfou API.
+
+    :copyright: (c) 2014 by xiong-jia.le ( lexiongjia@gmail.com )
+    :license: Vim license. See :help license
+"""
 
 import json
 from . import misc

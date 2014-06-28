@@ -5,7 +5,7 @@
     It is the interfaces for vim_fanfou.vim
 
     :copyright: (c) 2014 by xiong-jia.le ( lexiongjia@gmail.com )
-    :license: MIT, see LICENSE for more details.
+    :license: Vim license. See :help license
 """
 
 from . import misc

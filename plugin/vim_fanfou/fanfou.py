@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+"""
+    vim_fanfou.fanfou:
+    ~~~~~~~~~~~~~~~~~~
+    Fanfou is the wrapper for Fanfou API.
+
+    :copyright: (c) 2014 by xiong-jia.le ( lexiongjia@gmail.com )
+    :license: Vim license. See :help license
+"""
+
 
 from . import fanfou_base as FanfouBase
 from . import misc

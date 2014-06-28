@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+"""
+    vim_fanfou.fanfou_oauth_base:
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    FanfouOAuthBase implemented all the base functions for OAuth.
+
+    :copyright: (c) 2014 by xiong-jia.le ( lexiongjia@gmail.com )
+    :license: Vim license. See :help license
+"""
 
 import time, webbrowser, ConfigParser
 import binascii, hmac, hashlib, random

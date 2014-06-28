@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+"""
+    vim_fanfou.fanfou_oauth:
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+    FanfouOAuth is based on FanfouOAuthBase.
+    It included all the configuration & urls and login/api functions.
+
+    :copyright: (c) 2014 by xiong-jia.le ( lexiongjia@gmail.com )
+    :license: Vim license. See :help license
+"""
 
 import urlparse
 

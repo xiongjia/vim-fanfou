@@ -5,7 +5,7 @@
     The utility functions or objects.
 
     :copyright: (c) 2014 by xiong-jia.le ( lexiongjia@gmail.com )
-    :license: MIT, see LICENSE for more details.
+    :license: Vim license. See :help license
 """
 
 import os, sys, logging, ConfigParser, time, urllib2
