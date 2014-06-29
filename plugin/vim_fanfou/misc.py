@@ -8,7 +8,7 @@
     :license: Vim license. See :help license
 """
 
-import os, sys, logging, ConfigParser, time, urllib2
+import os, sys, logging, ConfigParser, time, urllib2, HTMLParser
 from email import utils as emailutils
 
 def resolve_usr_filename(filename):
@@ -199,6 +199,30 @@ def mbstrlen(src):
     except Exception, err:
         LOG.error("String convert issue %s", err)
         return len(src)
+
+class MsgStrConv:
+    """To convert message strings"""
+    def __init__(self):
+        """constructor for MsgStrConv"""
+        self._html_parser = HTMLParser.HTMLParser()
+
+    def FromHTMLStr(self, src_str):
+        """Convert the HTML String to a normal string
+        (e.g. &lt; = '<'; &gt; = '>')
+
+        :param src_str: the source html str
+        """
+        ret_str = src_str
+        try:
+            ret_str = self._html_parser.unescape(src_str).encode('utf8')
+        except Exception, err:
+            LOG.error("HTML text convert issue: %s", err)
+        return ret_str
+
+
+# The instance of MsgStrConv object
+MSG_CONV = MsgStrConv()
+
 
 def main():
     """Test function"""

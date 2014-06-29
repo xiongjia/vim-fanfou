@@ -134,13 +134,13 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             if item.has_key("photo_url"):
                 line_msg = "%s: %s %s |%s|" % (
                     item["user_name"].encode("utf8"),
-                    item["text"].encode("utf8"),
+                    misc.MSG_CONV.FromHTMLStr(item["text"]),
                     item["photo_url"].encode("utf8"),
                     misc.parse_tm_str(item["created_at"]))
             else:
                 line_msg = "%s: %s |%s|" % (
                     item["user_name"].encode("utf8"),
-                    item["text"].encode("utf8"),
+                    misc.MSG_CONV.FromHTMLStr(item["text"]),
                     misc.parse_tm_str(item["created_at"]))
 
             # add to vim buf
