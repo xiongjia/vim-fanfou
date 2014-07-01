@@ -9,4 +9,5 @@
 """
 
 from . import vim_fanfou
+from . import vim_fanfou_unittest
 

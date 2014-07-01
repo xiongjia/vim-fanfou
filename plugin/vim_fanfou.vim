@@ -93,12 +93,22 @@ VIM_FANFOU.refresh()
 end_python
 endfunction
 
+" re-set OAuth token
 function! s:login()
     call s:init()
 python << end_python
 from vim_fanfou import vim_fanfou
 VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
 VIM_FANFOU.login()
+end_python
+endfunction
+
+" unittest
+function! VimFanfouTests()
+    call s:init()
+python << end_python
+from vim_fanfou import vim_fanfou_unittest
+vim_fanfou_unittest.vim_fanfou_tests()
 end_python
 endfunction
 
