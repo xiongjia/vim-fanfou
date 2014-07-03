@@ -105,6 +105,9 @@ class VimFanfouBase(object):
             r"syn match fanfouTimeBar /|/ contained",
             "hi default link fanfouTimeBar FanfouIgnore",
             "hi default link fanfouTime String",
+            # reply
+            r"syn match fanfouReply /\w\@<!@\(\w\|\.\|[^\x00-\x7f]\)\+/",
+            "hi default link fanfouReply Label",
             # title
             r"syn match fanfouTitle " +
             r"/^\%(\w\+:\)\@!.\+\*$/ contains=fanfouTitleStar",
