@@ -114,6 +114,9 @@ class VimFanfouBase(object):
             r"syn match fanfouTitleStar /\*$/ contained",
             "hi default link fanfouTitle Title",
             "hi default link fanfouTitleStar FanfouIgnore",
+            # hash
+            r"syn match fanfouHash /#[^#]\+#/",
+            "hi default link fanfouHash Underlined",
             # web url
             r"syn match FanfouUrl " +
             r"'\%(https\=://\|www\.\)[a-zA-Z0-9_./\-:@]\+'",
