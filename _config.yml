@@ -1,0 +1,21 @@
+# YAML file for grunt
+
+# modules 
+mod:
+  # jQuery
+  jsJQuery: 'bower_components/jquery/dist/jquery.js'
+  # bootstrap
+  jsBootstrap: 'bower_components/bootstrap/dist/js/bootstrap.js'
+  cssBootstrap: 'bower_components/bootstrap/dist/css/bootstrap.css'
+  dirBootstrap: 'bower_components/bootstrap/dist'
+ 
+# destination
+dest:
+  cssMain: 'assets/css/main-v0.1.css'
+  jsMain:  'assets/js/main-v0.1.js'
+  htmlMain: 'index.html'
+
+# util
+util:
+  servPort: 9001
+
