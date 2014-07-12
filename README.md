@@ -1,17 +1,34 @@
 # Vim-Fanfou
-Fanfou is a Twitter clone. 
-Vim-fanfou is a TwitVim clone ( https://github.com/vim-scripts/TwitVim ).
-Vim-fanfou allows you to post to status and view Fanfou timeline.
+Vim-Fanfou = [VIM](http://www.vim.org/) + [Fanfou](http://fanfou.com/).
+It allows you to post to status and view Fanfou timeline.   
 
-# Installation
+Just like Fanfou is a Twitter clone. 
+Vim-Fanfou is a [TwitVim](https://github.com/vim-scripts/TwitVim) clone.   
+
+## About
+### Resources: 
+ * [Source code](https://github.com/xiongjia/vim-fanfou) : https://github.com/xiongjia/vim-fanfou
+ * [Releases](https://github.com/xiongjia/vim-fanfou/releases) : https://github.com/xiongjia/vim-fanfou/releases
+ * [Vim Script](http://www.vim.org/scripts/script.php?script_id=4972) : http://www.vim.org/scripts/script.php?script_id=4972
+ * [Project home page](http://xiongjia.github.io/vim-fanfou/): http://xiongjia.github.io/vim-fanfou/
+
+### Contact:
+ * My Fanfou account: [Xiongjia_Le](http://fanfou.com/xiongjia_le) 
+ * E-mail: <a href="mailto:lexiongjia@gmail.com">lexiongjia@gmail.com</a> 
+ * Report issues:  [github issues](https://github.com/xiongjia/vim-fanfou/issues)
+
+### License
+Vim-Fanfou is distributed under the same terms as VIM itself. See :help license.
+
+## Installation
  - Requirements:   
    Vim-Fanfou is based on Python 2.7(+) & VIM 7+.
    Please check your VIM before you install Vim-Fanfou.
  - Steps to install:   
    Copy the "plugin" folder to your VIM "plugin" folder.
 
-# Usage
-## Setup & Login
+## Usage
+### Setup & Login
  - To enable HTTP Proxy: Add below line to your .vimrc.    
    `let g:fanfou_http_proxy = "http://<proxy-host>:<proxy-port>"`
  - To setup your Fanfou account: Run below command for save the Fanfou OAuth token.   
@@ -21,7 +38,7 @@ Vim-fanfou allows you to post to status and view Fanfou timeline.
      NOTE: In default, Vim-Fanfou saves your OAuth Token
          to "$HOME/.fanfou_auth_cache".
 
-## Commands
+### Commands
  - FanfouSetAccount   
    To setup your Fanfou account. Please check "Setup & Login" section.
  - FanfouSwitchAccount   
@@ -33,14 +50,7 @@ Vim-fanfou allows you to post to status and view Fanfou timeline.
  - FanfouPostStatus    
    To post a new Status to your Fanfou.
 
-## Shortcut key
+### Shortcut key
  - To update your Fanfou Vim Buffer:   
    `nnoremap <buffer> <silent> <Leader><Leader> :FanfouRefresh`
-
-# License
-Vim-fanfou is distributed under the same terms as VIM itself. See :help license.
-
-# Contact
- - The maintainer: @Xiongjia_Le ( http://fanfou.com/xiongjia_le ) 
- - VIM Script: http://www.vim.org/scripts/script.php?script_id=4972
 
