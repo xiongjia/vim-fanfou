@@ -1,4 +1,5 @@
 vim-fanfou
 ==========
 
-vim fanfou client
+gh-pages for vim-fanfou ( https://github.com/xiongjia/vim-fanfou )
+
