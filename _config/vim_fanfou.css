@@ -1,0 +1,103 @@
+body {font-family: Tahoma, Geneva, sans-serif; margin: 1em 2em 1em 2em; font-size: 120%; line-height: 130%;}
+h1, h2, h3, h4, h5, h6 {font-family: Trebuchet MS, Helvetica, sans-serif; font-weight: bold; line-height:100%; margin-top: 1.5em; margin-bottom: 0.5em;}
+h1 {font-size: 2.6em; color: #000000;}
+h2 {font-size: 2.2em; color: #404040;}
+h3 {font-size: 1.8em; color: #707070;}
+h4 {font-size: 1.4em; color: #909090;}
+h5 {font-size: 1.3em; color: #989898;}
+h6 {font-size: 1.2em; color: #9c9c9c;}
+p, pre, blockquote, table, ul, ol, dl {margin-top: 1em; margin-bottom: 1em;}
+ul ul, ul ol, ol ol, ol ul {margin-top: 0.5em; margin-bottom: 0.5em;}
+li {margin: 0.3em auto;}
+ul {margin-left: 2em; padding-left: 0.5em;}
+dt {font-weight: bold;}
+img {border: none;}
+pre {border-left: 1px solid #ccc; margin-left: 2em; padding-left: 0.5em;}
+blockquote {padding: 0.4em; background-color: #f6f5eb;}
+th, td {border: 1px solid #ccc; padding: 0.3em;}
+th {background-color: #f0f0f0;}
+hr {border: none; border-top: 1px solid #ccc; width: 100%;}
+del {text-decoration: line-through; color: #777777;}
+.toc li {list-style-type: none;}
+.todo {font-weight: bold; background-color: #f0ece8; color: #a03020;}
+.justleft {text-align: left;}
+.justright {text-align: right;}
+.justcenter {text-align: center;}
+.center {margin-left: auto; margin-right: auto;}
+
+/* { right bar style ======================== */
+.vw-right {
+  position: absolute;
+  width: 208px;
+  z-index: 100;
+  top: 5%;
+  right: 12%;
+  display: none;
+}
+
+.vw-right .toggler {
+  text-align: center;
+  font-size: 12px;
+  background: #808080;
+  -moz-border-radius: 2px 2px 0 0;
+       border-radius: 2px 2px 0 0;
+  color: #000000;
+  position: relative;
+  z-index: 101;
+  cursor: pointer;
+}
+
+.toc {
+  overflow: auto;
+  overflow-x: hidden;
+  border: 1px solid #0;
+  color: #0;
+  -moz-border-radius: 0 0 5px 5px;
+       border-radius: 0 0 5px 5px;
+  background: #c0c0c0;
+  padding: 12px;
+  -webkit-box-shadow: 0 1px 8px #000;
+     -moz-box-shadow: 0 1px 8px #000;
+          box-shadow: 0 1px 8px #000;
+  display: none;
+}
+
+.toc ul {
+  margin: 0;
+}
+
+.toc li {
+  color: #eff;
+}
+
+.toc a {
+  color: #000000;
+}
+
+td.gsc-clear-button {
+  display: none !important;
+}
+
+div.gsc-control-cse {
+  padding: 1px 1px 1px 1px !important;
+}
+
+/* } right bar style ======================== */
+
+.xj-footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 100px;
+  color: #777;
+  text-align: center;
+  border-top: 1px solid #e5e5e5;
+}
+
+.content {
+  font-size:120%;
+  padding-left: 15px;
+  width: 75%;
+  line-height: 120%
+}
+
+

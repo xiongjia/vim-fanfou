@@ -8,7 +8,9 @@ mod:
   jsBootstrap: 'bower_components/bootstrap/dist/js/bootstrap.js'
   cssBootstrap: 'bower_components/bootstrap/dist/css/bootstrap.css'
   dirBootstrap: 'bower_components/bootstrap/dist'
- 
+  # lazy load
+  jsLazyLoad: 'bower_components/jquery.lazyLoad/jquery.lazyLoad.js'
+
 # destination
 dest:
   cssMain: 'assets/css/main-v0.1.css'
@@ -18,4 +20,5 @@ dest:
 # util
 util:
   servPort: 9001
+  servDbg: true
 

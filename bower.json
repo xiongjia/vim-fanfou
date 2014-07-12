@@ -13,6 +13,8 @@
     "bower_components"
   ],
   "dependencies": {
-    "jquery": "~2.1.1"
+    "jquery": "~2.1.1",
+    "jquery.lazyload": "~1.9.3",
+    "bootstrap": "~3.2.0"
   }
 }

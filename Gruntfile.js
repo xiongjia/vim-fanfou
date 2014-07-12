@@ -1,6 +1,7 @@
 'use strict';
 
-var childProc = require('child_process');
+var childProc = require('child_process'),
+  path = require('path');
 
 module.exports = function (grunt) {
   var cfg, optNoCompress, _;
@@ -16,17 +17,62 @@ module.exports = function (grunt) {
       gruntfile: { src: 'Gruntfile.js' },
       config: { src: ['_config/vim_fanfou.js'] }
     },
-    clean: [ cfg.dest.cssMain, cfg.dest.jsMain, cfg.dest.htmlMain ],
+    clean: [
+      cfg.dest.cssMain,
+      cfg.dest.jsMain,
+      cfg.dest.htmlMain,
+      'assets/fonts'
+    ],
     concat: {
+      css: {
+        src: [
+          cfg.mod.cssBootstrap,
+          '_config/vim_fanfou.css'
+        ],
+        dest: cfg.dest.cssMain
+      },
       js: {
         src: [
           cfg.mod.jsJQuery,
+          cfg.mod.jsBootstrap,
+          cfg.mod.jsLazyLoad,
           '_config/vim_fanfou.js'
         ],
         dest: cfg.dest.jsMain
       }
     },
+    copy: {
+      fonts: {
+        expand: true,
+        cwd: cfg.mod.dirBootstrap,
+        src: [ 'fonts/**/*' ],
+        dest: __dirname + '/assets'
+      }
+    },
+    htmlmin: {
+      dist: {
+        options: { removeComments: true, collapseWhitespace: true },
+        files: { 'index.html': 'index.html' }
+      }
+    },
+    cssmin: { minify: { src: [ cfg.dest.cssMain ], dest: cfg.dest.cssMain } },
     uglify: { dist: { src: cfg.dest.jsMain, dest: cfg.dest.jsMain} },
+    watch: {
+      content: {
+        files: [ 'index.md' ],
+        tasks: [ 'makePages' ],
+        options: { spawn: false }
+      }
+    },
+    connect: {
+      dist: {
+        options: {
+          port: cfg.util.servPort,
+          debug: cfg.util.servDbg,
+          base: __dirname
+        }
+      }
+    },
     makePages: {
       pages: [ {src: 'index.md', dest: 'index.html'} ]
     }
@@ -38,14 +84,19 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   /* make pages task */
   grunt.registerTask('makePages', 'make html pages', function () {
-    var pages, tasks, done;
+    var pages, tasks, done, htmlTemplate;
 
     grunt.config.requires('makePages', 'makePages.pages');
     pages = grunt.config.get('makePages.pages');
     grunt.log.writeln('Make pages: %j', pages);
+    htmlTemplate = path.join(__dirname, '_config/html_home.tpl');
 
     function runPandoc(opts, callback) {
       var proc, procArgs, stdOut, stdErr;
@@ -53,9 +104,15 @@ module.exports = function (grunt) {
       opts = opts || {};
       stdOut = '';
       stdErr = '';
-      procArgs = ['-o', opts.html, opts.md];
+      procArgs = [
+        _.str.sprintf('--template=%s', htmlTemplate),
+        '--toc',
+        '-o', opts.html,
+        opts.md
+      ];
       grunt.log.writeln('pandoc %j', procArgs);
-      proc = childProc.spawn('pandoc', procArgs);
+      proc = childProc.spawn('pandoc', procArgs,
+        { cwd: __dirname, env: process.env });
       proc.on('exit', function (code) {
         var err;
         if (code !== 0) {
@@ -90,14 +147,21 @@ module.exports = function (grunt) {
   });
  
   /* alias */
-  grunt.registerTask('initPack',
+  grunt.registerTask('pack',
+    optNoCompress ? 'Make Pages (no compress)' : 'Make Pages',
     optNoCompress ?
-      'Export all files (no compress)' : 'Export all files',
-    optNoCompress ?
-      ['clean', 'jshint', 'concat' ] :
-      ['clean', 'jshint', 'concat' ]);
+      ['jshint', 'makePages'] :
+      ['jshint', 'makePages', 'htmlmin']);
 
-  grunt.registerTask('pack', ['jshint', 'makePages']);
+  grunt.registerTask('initPack',
+    optNoCompress ?  'Export all files (no compress)' : 'Export all files',
+    optNoCompress ?
+      ['clean', 'jshint', 'concat', 'copy', 'pack' ] :
+      ['clean', 'jshint', 'concat', 'copy', 'pack', 'uglify', 'cssmin' ]);
+
+  grunt.registerTask('serv', 'Launch local test server',
+    ['connect', 'watch']);
+  grunt.registerTask('server', ['serv']);
 
   /* default task */
   grunt.registerTask('default', ['pack']);
