@@ -6,7 +6,7 @@ It allows you to post to status and view Fanfou timeline.
 Just like Fanfou is a Twitter clone. 
 Vim-Fanfou is a [TwitVim](https://github.com/vim-scripts/TwitVim) clone.   
 Below are 2 Vim buffers. Vim-Fanfou is the top buffer. TwitVim is the bottom buffer. 
-<br><img class="lazy" data-original="assets/img/vim-fanfou-buf.png" width="500" height="590"><br>
+<br><img src="assets/img/vim-fanfou-buf.png" width="500" height="590"><br>
 
 ## About
 ### Resources: 
