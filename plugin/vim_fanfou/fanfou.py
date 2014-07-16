@@ -21,7 +21,9 @@ class Fanfou(FanfouBase.FanfouBase):
             "home_timeline":
                 "http://api.fanfou.com/statuses/home_timeline.json",
             "update":
-                "http://api.fanfou.com/statuses/update.json"
+                "http://api.fanfou.com/statuses/update.json",
+            "mentions":
+                "http://api.fanfou.com/statuses/mentions.json"
         }
 
     def statuses_update(self, status):
@@ -64,6 +66,22 @@ class Fanfou(FanfouBase.FanfouBase):
         # parse response
         return self.parse_rep_messages(rep_data)
 
+    def get_statuses_mentions(self, opts):
+        data = {
+            "count": opts.get("count", 10),
+        }
+        try:
+            rep_data = self.send_api_req({
+                "method": "GET",
+                "base_url": self.urls["mentions"],
+                "req_data": data,
+            })
+        except Exception, err:
+            LOG.error("cannot access status mentions, err %s", err)
+            raise err
+        # parse response
+        return self.parse_rep_messages(rep_data)
+
 
 # The test entry function
 def main():
@@ -82,6 +100,13 @@ def main():
     # for tm_ln in tm_lines:
     #     LOG.debug("usr: %s (%s) - msg: %s",
     #         tm_ln["user_name"], tm_ln["created_at"], tm_ln["text"])
+    #     LOG.debug("---------------------")
+    # > statuses mentions
+    # mentions = fanfou.get_statuses_mentions({ "count": 10 })
+    # LOG.debug("mentions: len=%d", len(mentions))
+    # for mention in mentions:
+    #     LOG.debug("usr: %s (%s) - msg: %s",
+    #         mention["user_name"], mention["created_at"], mention["text"])
     #     LOG.debug("---------------------")
     # > Status post
     # ret_item = fanfou.statuses_update("Fanfou API Test")
