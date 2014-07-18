@@ -8,16 +8,21 @@
     :license: Vim license. See :help license
 """
 
-class FanfouDatType(object):
+class FanfouDataType(object):
     EMPTY = 0
     HOME_TIMELINE = 1
     MENTIONS = 2
 
+    DATA_TITLE = {
+        HOME_TIMELINE: "Fanfou Home Timeline",
+        MENTIONS: "Fanfou Mentions"
+    }
 
-class FanfouDat(object):
+
+class FanfouData(object):
     def __init__(self):
         self._data = []
-        self._type = FanfouDatType.EMPTY
+        self._type = FanfouDataType.EMPTY
 
     def get_data_type(self):
         return self._type
@@ -34,4 +39,8 @@ class FanfouDat(object):
             return False
         self._data.insert(0, item)
         return True
+
+    def get_data_title(self):
+        return FanfouDataType.DATA_TITLE.get(self._type, "Fanfou")
+
 

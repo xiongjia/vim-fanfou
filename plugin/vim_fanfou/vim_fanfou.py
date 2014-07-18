@@ -13,6 +13,8 @@ from . import fanfou_oauth as FanfouOAuth
 from . import fanfou as Fanfou
 from . import vim_util as VimUtil
 from . import vim_fanfou_base as VimFanfouBase
+from . import fanfou_data as FanfouData
+
 LOG = misc.LOGGER.get_logger()
 VIM = VimUtil.VimUtil()
 
@@ -32,10 +34,6 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
     """All the Fanfou API interfaces"""
     # The instance of VimFanfou object
     VIM_FANFOU = None
-    # All buffer titles
-    VIM_BUF_TITLE = {
-        "home_tl": "Fanfou Home Timeline",
-    }
 
     def __init__(self, cfg):
         """constructor function
@@ -51,7 +49,7 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             LOG.warn("Cannot load oauth token; err %s", err)
 
         # current data
-        self._cur_tm_line = []
+        self._cur_dat = FanfouData.FanfouData()
 
     @staticmethod
     def init(cfg):
@@ -77,15 +75,37 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             VIM.show_msg_err("Cannot post status; err: %s" % err)
             return
 
-        self._cur_tm_line.insert(0, post_item)
-        self._show_cur_tm_line(self.VIM_BUF_TITLE["home_tl"])
+        data_type = FanfouData.FanfouDataType.HOME_TIMELINE
+        self._cur_dat.push_item(data_type, post_item)
+        self._show_cur_data()
+
         # display finish message
         VIM.show_msg_normal("Your status was sent.")
+
+    def update_mentions(self):
+        """Get the Fanfou home time line and update it VIM buffer"""
+        VIM.show_msg_normal("Updating mentions...")
+        try:
+            tm_ln = self._fanfou.get_statuses_mentions({
+                "count": self.get_timeline_count(),
+            })
+        except Exception, err:
+            LOG.warn("cannot update mentions %s", err)
+            VIM.show_msg_err("Cannot update mentions; err: %s" % err)
+            return
+
+        data_type = FanfouData.FanfouDataType.MENTIONS
+        self._cur_dat.set_items(data_type, tm_ln)
+        if not self._show_cur_data():
+            VIM.show_msg_err("Cannot update mentions; "
+                "err: Cannot update vim buffer.")
+        else:
+            # display finish message
+            VIM.show_msg_normal("Mentions timeline has been updated")
 
     def update_home_timeline(self):
         """Get the Fanfou home time line and update it VIM buffer"""
         VIM.show_msg_normal("Updating Home Timeline ...")
-        self._cur_tm_line = []
         try:
             tm_ln = self._fanfou.get_home_timeline({
                 "count": self.get_timeline_count(),
@@ -95,16 +115,17 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             VIM.show_msg_err("Cannot update Home Timeline; err: %s" % err)
             return
 
-        self._cur_tm_line = tm_ln
-        if not self._show_cur_tm_line(self.VIM_BUF_TITLE["home_tl"]):
+        data_type = FanfouData.FanfouDataType.HOME_TIMELINE
+        self._cur_dat.set_items(data_type, tm_ln)
+        if not self._show_cur_data():
             VIM.show_msg_err("Cannot update Home Timeline; "
                 "err: Cannot update vim buffer.")
         else:
             # display finish message
             VIM.show_msg_normal("Home Timeline has been updated")
 
-    def _show_cur_tm_line(self, title):
-        """Append the self._cur_tm_line date to the VIM buffer
+    def _show_cur_data(self):
+        """Update the self._cur_dat to the VIM buffer
         :param title: The title string will be add to
             the first line of the buffer
         """
@@ -114,15 +135,20 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
             return False
 
         # update timeline to buffer
+        title = self._cur_dat.get_data_title()
         with VimUtil.VimBuffModifiable(VIM):
             buf[:] = None
             self.add_hdr(buf, title)
-            self.append_timeline(buf, self._cur_tm_line)
+            self.append_timeline(buf, self._cur_dat.get_items())
         return True
 
     def refresh(self):
         """refresh the Fanfou buffer"""
-        self.update_home_timeline()
+        data_type = self._cur_dat.get_data_type()
+        if data_type == FanfouData.FanfouDataType.MENTIONS:
+            self.update_mentions()
+        else:
+            self.update_home_timeline()
 
     @classmethod
     def append_timeline(cls, vim_buf, tm_ln):

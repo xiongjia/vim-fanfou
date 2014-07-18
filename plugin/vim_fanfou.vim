@@ -68,6 +68,17 @@ VIM_FANFOU.update_home_timeline()
 end_python
 endfunction
 
+" get Fanfou home timeline
+function! s:update_mentions()
+    call s:init()
+python << end_python
+from vim_fanfou import vim_fanfou
+VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
+VIM_FANFOU.update_mentions()
+end_python
+endfunction
+
+
 " post status
 function! s:post_status()
     call s:init()
@@ -115,6 +126,10 @@ endfunction
 " Exports VIM commands
 if !exists(":FanfouHomeTimeline")
     command FanfouHomeTimeline :call s:update_home_timeline()
+endif
+
+if !exists(":FanfouMentions")
+    command FanfouMentions :call s:update_mentions()
 endif
 
 if !exists(":FanfouRefresh")
