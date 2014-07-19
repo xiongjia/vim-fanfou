@@ -6,7 +6,7 @@ Just like Fanfou is a Twitter clone.
 Vim-Fanfou is a [TwitVim](https://github.com/vim-scripts/TwitVim) clone.   
 
 ## About
-### Resources: 
+### Links: 
  * [Source code](https://github.com/xiongjia/vim-fanfou) : https://github.com/xiongjia/vim-fanfou
  * [Releases](https://github.com/xiongjia/vim-fanfou/releases) : https://github.com/xiongjia/vim-fanfou/releases
  * [Vim Script](http://www.vim.org/scripts/script.php?script_id=4972) : http://www.vim.org/scripts/script.php?script_id=4972
@@ -45,6 +45,8 @@ Vim-Fanfou is distributed under the same terms as VIM itself. See :help license.
    To switch another Fanfou account.
  - FanfouHomeTimeline   
    To update your Fanfou Home timeline in a Vim Buffer.
+ - FanfouMentions    
+   To update your Fanfou Mentions timeline in a Vim Buffer.
  - FanfouRefresh   
    To update Fanfou Vim Buffer.
  - FanfouPostStatus    
