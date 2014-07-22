@@ -17,7 +17,7 @@ class FanfouDataType(object):
     DATA_TITLE = {
         HOME_TIMELINE: "Fanfou Home Timeline",
         MENTIONS: "Fanfou Mentions",
-        FAVORITES: "Fanfou Favorites", 
+        FAVORITES: "Fanfou Favorites",
     }
 
 

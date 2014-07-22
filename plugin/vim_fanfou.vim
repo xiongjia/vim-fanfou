@@ -78,6 +78,15 @@ VIM_FANFOU.update_mentions()
 end_python
 endfunction
 
+" get Fanfou favorites
+function! s:update_favorites()
+    call s:init()
+python << end_python
+from vim_fanfou import vim_fanfou
+VIM_FANFOU = vim_fanfou.VimFanfou.get_instance()
+VIM_FANFOU.update_favorites()
+end_python
+endfunction
 
 " post status
 function! s:post_status()
@@ -130,6 +139,10 @@ endif
 
 if !exists(":FanfouMentions")
     command FanfouMentions :call s:update_mentions()
+endif
+
+if !exists(":FanfouFavorites")
+    command FanfouFavorites :call s:update_favorites()
 endif
 
 if !exists(":FanfouRefresh")

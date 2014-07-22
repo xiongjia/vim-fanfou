@@ -82,6 +82,28 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         # display finish message
         VIM.show_msg_normal("Your status was sent.")
 
+    def update_favorites(self):
+        """Get the Fanfou favorites and update it VIM buffer"""
+        VIM.show_msg_normal("Updating favorites...")
+        try:
+            favorites = self._fanfou.get_favorites({
+                "count": self.get_timeline_count(),
+            })
+        except Exception, err:
+            LOG.warn("cannot favorites %s", err)
+            VIM.show_msg_err("Cannot update favorites; err: %s" % err)
+            return
+
+        data_type = FanfouData.FanfouDataType.FAVORITES
+        self._cur_dat.set_items(data_type, favorites)
+        if not self._show_cur_data():
+            VIM.show_msg_err("Cannot update favorites; "
+                "err: Cannot update vim buffer.")
+        else:
+            # display finish message
+            VIM.show_msg_normal("Favorites timeline has been updated")
+
+
     def update_mentions(self):
         """Get the Fanfou home time line and update it VIM buffer"""
         VIM.show_msg_normal("Updating mentions...")
@@ -147,6 +169,8 @@ class VimFanfou(VimFanfouBase.VimFanfouBase):
         data_type = self._cur_dat.get_data_type()
         if data_type == FanfouData.FanfouDataType.MENTIONS:
             self.update_mentions()
+        elif data_type == FanfouData.FanfouDataType.FAVORITES:
+            self.update_favorites()
         else:
             self.update_home_timeline()
 
