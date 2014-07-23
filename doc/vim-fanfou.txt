@@ -35,19 +35,23 @@ Setup & Login
          to "$HOME/.fanfou_auth_cache".
 
 Commands
- - FanfouSetAccount
+ - `:FanfouSetAccount`
    To setup your Fanfou account. Please check "Setup & Login" section.
- - FanfouSwitchAccount
-   To switch another Fanfou account.
- - FanfouHomeTimeline
-   To update your Fanfou Home timeline in a Vim Buffer.
- - FanfouRefresh
-   To update Fanfou Vim Buffer.
- - FanfouPostStatus
+ - `:FanfouSwitchAccount`
+   Login to another Fanfou account.
+ - `:FanfouHomeTimeline`
+   View your Fanfou home timeline.
+ - `:FanfouMentions`
+   View @ mention messages.
+ - `:FanfouFavorites`
+   View your Fanfou favorites.
+ - `:FanfouRefresh`
+   Update Fanfou Vim Buffer. 
+ - `:FanfouPostStatus`
    To post a new Status to your Fanfou.
 
 Shortcut key
- - To update your Fanfou Vim Buffer:
+ - To update your Fanfou Vim Buffer ( :FanfouRefresh ):   
    `nnoremap <buffer> <silent> <Leader><Leader> :FanfouRefresh`
 
 4. Licence                                                 *vim-fanfou-licence*

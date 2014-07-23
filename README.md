@@ -12,7 +12,7 @@ Vim-Fanfou is a [TwitVim](https://github.com/vim-scripts/TwitVim) clone.
  * [Vim Script](http://www.vim.org/scripts/script.php?script_id=4972) : http://www.vim.org/scripts/script.php?script_id=4972
  * [Project home page](http://xiongjia.github.io/vim-fanfou/): http://xiongjia.github.io/vim-fanfou/
 
-### Contact:
+### Contact
  * My Fanfou account: [Xiongjia_Le](http://fanfou.com/xiongjia_le) 
  * E-mail: <a href="mailto:lexiongjia@gmail.com">lexiongjia@gmail.com</a> 
  * Report issues:  [github issues](https://github.com/xiongjia/vim-fanfou/issues)
@@ -39,20 +39,22 @@ Vim-Fanfou is distributed under the same terms as VIM itself. See :help license.
          to "$HOME/.fanfou_auth_cache".
 
 ### Commands
- - FanfouSetAccount   
+ - `:FanfouSetAccount`    
    To setup your Fanfou account. Please check "Setup & Login" section.
- - FanfouSwitchAccount   
-   To switch another Fanfou account.
- - FanfouHomeTimeline   
-   To update your Fanfou Home timeline in a Vim Buffer.
- - FanfouMentions    
-   To update your Fanfou Mentions timeline in a Vim Buffer.
- - FanfouRefresh   
-   To update Fanfou Vim Buffer.
- - FanfouPostStatus    
+ - `:FanfouSwitchAccount`    
+   Login to another Fanfou account.
+ - `:FanfouHomeTimeline`    
+   View your Fanfou home timeline.
+ - `:FanfouMentions`    
+   View @ mention messages.
+ - `:FanfouFavorites`    
+   View your Fanfou favorites.
+ - `:FanfouRefresh`    
+   Update Fanfou Vim Buffer. 
+ - `:FanfouPostStatus`    
    To post a new Status to your Fanfou.
 
 ### Shortcut key
- - To update your Fanfou Vim Buffer:   
+ - To update your Fanfou Vim Buffer ( `:FanfouRefresh` ):   
    `nnoremap <buffer> <silent> <Leader><Leader> :FanfouRefresh`
 
