@@ -34,8 +34,9 @@ class Fanfou(FanfouBase.FanfouBase):
         if status_len > 140:
             raise Exception("Invalid status; Too many characters. " +
                             "It was not sent.")
-        elif status_len < 0:
-            raise Exception("Invalid status; It's empty. It was not sent.")
+        elif status_len <= 0:
+            raise Exception("Invalid status; It is an empty string." +
+                " It was not sent.")
 
         # send status
         data = { "status": status }

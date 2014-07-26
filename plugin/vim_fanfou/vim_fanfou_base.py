@@ -84,8 +84,11 @@ class VimFanfouBase(object):
 
     def update_buf_key_map(self):
         self._vim.vim_batch([
-            "nnoremap <buffer> <silent> <Leader><Leader> " +
-            ":FanfouRefresh<cr>"
+            "nnoremap <buffer> <silent> <Leader><Leader> :FanfouRefresh<cr>",
+            "nnoremap <buffer> <silent> <Leader>h :FanfouHomeTimeline<cr>",
+            "nnoremap <buffer> <silent> <Leader>m :FanfouMentions<cr>",
+            "nnoremap <buffer> <silent> <Leader>s :FanfouFavorites<cr>",
+            "nnoremap <buffer> <silent> <Leader>p :FanfouPostStatus<cr>",
         ])
 
     def update_buf_syntax(self):
