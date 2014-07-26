@@ -10,7 +10,7 @@ Vim-Fanfou is a [TwitVim](https://github.com/vim-scripts/TwitVim) clone.
  * [Source code](https://github.com/xiongjia/vim-fanfou) : https://github.com/xiongjia/vim-fanfou
  * [Releases](https://github.com/xiongjia/vim-fanfou/releases) : https://github.com/xiongjia/vim-fanfou/releases
  * [Vim Script](http://www.vim.org/scripts/script.php?script_id=4972) : http://www.vim.org/scripts/script.php?script_id=4972
- * [Project home page](http://xiongjia.github.io/vim-fanfou/): http://xiongjia.github.io/vim-fanfou/
+ * [Project Page](http://xiongjia.github.io/vim-fanfou/): http://xiongjia.github.io/vim-fanfou/
 
 ### Contact
  * My Fanfou account: [Xiongjia_Le](http://fanfou.com/xiongjia_le) 
