@@ -54,7 +54,10 @@ Vim-Fanfou is distributed under the same terms as VIM itself. See :help license.
  - `:FanfouPostStatus`    
    To post a new Status to your Fanfou.
 
-### Shortcut key
- - To update your Fanfou Vim Buffer ( `:FanfouRefresh` ):   
-   `nnoremap <buffer> <silent> <Leader><Leader> :FanfouRefresh`
+### Shortcut keys in the Fanfou VIM buffer
+ - <Leader><Leader> :FanfouRefresh<cr>
+ - <Leader>h :FanfouHomeTimeline<cr>
+ - <Leader>m :FanfouMentions<cr>
+ - <Leader>s :FanfouFavorites<cr>
+ - <Leader>p :FanfouPostStatus<cr>
 
