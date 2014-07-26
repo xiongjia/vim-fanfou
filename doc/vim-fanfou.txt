@@ -10,11 +10,17 @@ CONTENTS                                                           *vim-fanfou*
 ===============================================================================
 1. Intro                                                     *vim-fanfou-intro*
 
-Fanfou is a Twitter clone. 
-Vim-fanfou is a TwitVim clone ( https://github.com/vim-scripts/TwitVim ).
+Vim-Fanfou = VIM + Fanfou ( http://fanfou.com/ ).
+It allows you to post to status and view Fanfou timeline.
 
-Vim-Fanfou is a Vim plugin that allows you to post to status and
-view Fanfou timeline.
+Just like Fanfou is a Twitter clone. 
+Vim-Fanfou is a TwitVim ( https://github.com/vim-scripts/TwitVim ) clone.
+
+Vim-Fanfou links:
+ - Source code:  https://github.com/xiongjia/vim-fanfou
+ - Releases:     https://github.com/xiongjia/vim-fanfou/releases
+ - Vim Script:   http://www.vim.org/scripts/script.php?script_id=4972
+ - Project Page: http://xiongjia.github.io/vim-fanfou/
 
 2. Requirements                                       *vim-fanfou-requirements*
 
@@ -26,6 +32,7 @@ Please check your VIM before you install Vim-Fanfou.
 Setup & Login
  - To enable HTTP Proxy. Add below line to your .vimrc.
    `let g:fanfou_http_proxy = "http://<proxy-host>:<proxy-port>"`
+
  - To setup your Fanfou account.
    Run below command for save the Fanfou OAuth token.
    `:FanfouSetAccount`
@@ -59,6 +66,6 @@ Shortcut key in the Fanfou VIM buffer
 
 4. Licence                                                 *vim-fanfou-licence*
 
-Vim-fanfou is distributed under the same terms as VIM itself.
+Vim-Fanfou is distributed under the same terms as VIM itself.
 See :help license.
 
