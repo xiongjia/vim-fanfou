@@ -36,7 +36,8 @@ module.exports = function (grunt) {
           cfg.mod.jsJQuery,
           cfg.mod.jsBootstrap,
           cfg.mod.jsLazyLoad,
-          '_config/vim_fanfou.js'
+          '_config/vim_fanfou.js',
+          '_config/ganalytics.js'
         ],
         dest: cfg.dest.jsMain
       }
