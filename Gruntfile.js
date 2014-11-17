@@ -73,6 +73,12 @@ module.exports = function (grunt) {
         }
       }
     },
+    /* create site map */
+    sitemap: {
+      cwd: './',
+      dest: 'sitemap.txt',
+      site: 'http://xiongjia.github.io/vim-fanfou'
+    },
     makePages: {
       pages: [ {src: 'index.md', dest: 'index.html'} ]
     }
@@ -88,6 +94,30 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-contrib-copy');
+
+  /* sitemap task */
+  grunt.registerTask('sitemap', 'create sitemap.txt', function () {
+    var pages, pgCwd, dest, site, data;
+
+    /* check options */
+    grunt.config.requires('sitemap', 'sitemap.cwd',
+      'sitemap.dest', 'sitemap.site');
+
+    pgCwd = grunt.config.get('sitemap.cwd');
+    dest = grunt.config.get('sitemap.dest');
+    site = grunt.config.get('sitemap.site');
+    grunt.log.writeln('creating sitemap. { cwd:%s, dest: %s, site: %s }',
+      pgCwd, dest, site);
+
+    /* save the sitemap to 'data' */
+    pages = grunt.file.expand({cwd: pgCwd}, '*.html');
+    data = '';
+    grunt.util._.each(pages, function (pg) {
+      data = data + grunt.util._.str.sprintf('%s/%s\n', site, pg);
+    });
+    /* write sitemap to dest file */
+    grunt.file.write(dest, data);
+  });
 
   /* make pages task */
   grunt.registerTask('makePages', 'make html pages', function () {
@@ -156,8 +186,8 @@ module.exports = function (grunt) {
   grunt.registerTask('initPack',
     optNoCompress ?  'Export all files (no compress)' : 'Export all files',
     optNoCompress ?
-      ['clean', 'jshint', 'concat', 'copy', 'pack' ] :
-      ['clean', 'jshint', 'concat', 'copy', 'pack', 'uglify', 'cssmin' ]);
+      ['clean', 'jshint', 'concat', 'copy', 'pack', 'sitemap' ] :
+      ['clean', 'jshint', 'concat', 'copy', 'pack', 'uglify', 'cssmin', 'sitemap' ]);
 
   grunt.registerTask('serv', 'Launch local test server',
     ['connect', 'watch']);
